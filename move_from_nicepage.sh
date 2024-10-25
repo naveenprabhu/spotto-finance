@@ -2,7 +2,7 @@
 
 # Source and destination folders as arguments
 SOURCE_FOLDER="/Users/naveen/Documents/Nicepage Templates/Spotto Finance MVP/"
-DESTINATION_FOLDER="../"
+DESTINATION_FOLDER="./"
 
 # Check if both arguments are provided
 if [ -z "$SOURCE_FOLDER" ] || [ -z "$DESTINATION_FOLDER" ]; then
@@ -21,12 +21,8 @@ if [ ! -d "$DESTINATION_FOLDER" ]; then
   mkdir -p "$DESTINATION_FOLDER"
 fi
 
-# Move contents from source to destination
-for item in "$SOURCE_FOLDER"/*; do
-  mv -f "$item" "$DESTINATION_FOLDER"/
-  if [ $? -eq 0 ]; then
-    echo "Moved '$item' to '$DESTINATION_FOLDER'"
-  else
-    echo "Failed to move '$item'"
-  fi
-done
+# Move and overwrite contents from source to destination using rsync
+rsync -a "$SOURCE_FOLDER"/ "$DESTINATION_FOLDER"/
+
+echo "All contents moved and overwritten from '$SOURCE_FOLDER' to '$DESTINATION_FOLDER'."
+
