@@ -13,7 +13,8 @@ brew install nginx
 
 ### Step 2: Start Nginx
 
-```brew services start nginx
+```bash
+brew services start nginx
 ```
 
 ### Move Code from Nicepage to code repository
