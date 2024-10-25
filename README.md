@@ -2,9 +2,10 @@
 
 This is the code for Spotto finance website.
 
-## Prerequisites
+<summary> ## Prerequisites </summary>
 
-###Ngninx:
+<details>
+### Ngninx:
 
 #### Step 1: Install Nginx
 
@@ -36,6 +37,7 @@ brew services reload nginx
 brew services stop nginx
 ```
 
+</details>
 
 ### Move Code from Nicepage to code repository
 
