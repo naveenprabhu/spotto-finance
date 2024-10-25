@@ -3,7 +3,7 @@ Spotto Finance
 
 This is the code for Spotto finance website.
 
-#Prerequisites
+# Prerequisites
 
 - **Ngninx**: 
 
