@@ -5,10 +5,15 @@ This is the code for Spotto finance website.
 ## Prerequisites
 
 - **Ngninx**: 
-### Step 2: Install Nginx
+### Step 1: Install Nginx
 
 ```bash
 brew install nginx
+```
+
+### Step 2: Start Nginx
+
+```brew services start nginx
 ```
 
 ### Move Code from Nicepage to code repository
