@@ -8,7 +8,8 @@ This is the code for Spotto finance website.
 ### Step 2: Install Nginx
 
 ```bash
-brew install nginx```
+brew install nginx
+```
 
 ### Move Code from Nicepage to code repository
 
