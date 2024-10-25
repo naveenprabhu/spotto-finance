@@ -2,7 +2,7 @@
 
 # Source and destination folders as arguments
 SOURCE_FOLDER="/Users/naveen/Documents/Nicepage Templates/Spotto Finance MVP/"
-DESTINATION_FOLDER="./"
+DESTINATION_FOLDER="./src/"
 
 # Check if both arguments are provided
 if [ -z "$SOURCE_FOLDER" ] || [ -z "$DESTINATION_FOLDER" ]; then

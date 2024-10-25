@@ -1,3 +1,7 @@
+# Define variables for source and target directories
+SOURCE_DIR := ./src
+OUTPUT_DIR := ./output
+
 help::
 	@echo "Spotto Finance Make File instructions"
 	@echo "make help - shows help information"
@@ -6,12 +10,11 @@ help::
 	@echo "---"
 
 build:
-	cp -R *.html ./output
-	cp -R *.js ./output
-	cp -R *.css ./output
-	cp -r ./images ./output
-	cp -r ./blog ./output
-	cp -r ./intlTelInput ./output
+	rm -rf $(OUTPUT_DIR)/*
+	@echo "Building the project..."
+	mkdir -p $(OUTPUT_DIR)          # Create the output directory if it doesn't exist
+	cp -r $(SOURCE_DIR)/* $(OUTPUT_DIR)  # Copy source files to the output directory
+	@echo "Build complete. Files copied to $(OUTPUT_DIR)."
 
 
 dev_deploy: build
