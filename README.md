@@ -3,6 +3,16 @@ Spotto Finance
 
 This is the code for Spotto finance website.
 
+#Prerequisites
+
+- **Ngninx**: 
+
+## Move Code from Nicepage to code repository
+
+1. 
+
+
+
 
 ## Installation
 
