@@ -1,13 +1,16 @@
-Spotto Finance
-
+# Spotto Finance
 
 This is the code for Spotto finance website.
 
-# Prerequisites
+## Prerequisites
 
 - **Ngninx**: 
+### Step 2: Install Nginx
 
-## Move Code from Nicepage to code repository
+```bash
+brew install nginx
+
+### Move Code from Nicepage to code repository
 
 1. 
 
