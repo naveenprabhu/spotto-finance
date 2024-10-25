@@ -2,10 +2,10 @@
 
 This is the code for Spotto finance website.
 
-<summary> ## Prerequisites </summary>
+## Prerequisites 
 
 <details>
-### Ngninx:
+<summary> ### Ngninx: </summary>
 
 #### Step 1: Install Nginx
 
