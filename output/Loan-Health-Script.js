@@ -1,4 +1,3 @@
-alert('dfd');
 function showSectionGenerateOtp() {
 	// // Show the hidden section
 	// document.getElementById('sec-4977').style.display = 'block';
