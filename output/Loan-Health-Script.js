@@ -1,4 +1,3 @@
-alert('Hello');
 function toggleVisibility() {
 	// // Show the hidden section
 	// document.getElementById('sec-4977').style.display = 'block';
