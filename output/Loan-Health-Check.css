@@ -32,11 +32,11 @@
 
 .u-section-1 .u-form-1 {
   height: 309px;
-  --progress-spacing: 20px;
+  --progress-spacing: 40px;
   --bar-size: 2px;
   --bar-default-color: #c0c0c0;
   --bar-active-color: #478ac9;
-  --step-icon-size: 50px;
+  --step-icon-size: 40px;
   
   --step-icon-border-width: 0px;
   --step-icon-border-radius: 50px;
@@ -48,8 +48,8 @@
   --step-icon-text-done-color: #ffffff;
   --step-icon-text-active-color: #ffffff;
   --step-text-default-color: #999999;
-  --step-text-done-color: #478ac9;
-  --step-text-active-color: #478ac9;
+  --step-text-done-color: #fbeced;
+  --step-text-active-color: #fbeced;
   margin: 0 auto;
 }
 
