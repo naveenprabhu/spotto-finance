@@ -68,7 +68,6 @@ function calculatePotentialRepaymentAmount() {
 		const monthlyRepayment = calculateMonthlyRepayment();
 		const monthlySavings = monthlyRepayment - potentialMonthlyRepayment;
     const yearlySavings = monthlySavings > 0 ? monthlySavings * 12 : 0;
-		alert(monthlySavings)
 
 		document.getElementById("monthlyPotentialRepayment").textContent = `$${potentialMonthlyRepayment.toFixed(2)}/month`;
 
