@@ -298,6 +298,13 @@
     min-height: 694px;
   }
 
+  .u-section-1 .u-form-1 {
+    --progress-spacing: 35px;
+    --bar-size: 4px;
+    margin-right: initial;
+    margin-left: initial;
+  }
+
   .u-section-1 .u-text-5 {
     font-size: 1.125rem;
   }

@@ -44748,7 +44748,15 @@ a.u-link.u-text-hover-grey-90:hover {
     width: auto;
   }
 }
+@media (max-width: 575px) {
+  .u-header .u-sheet-1 {
+    min-height: 100px;
+  }
 
+  .u-header .u-menu-1 {
+    margin-bottom: 0;
+  }
+}
  .u-footer {
   background-image: none;
 }
