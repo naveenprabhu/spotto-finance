@@ -6,6 +6,7 @@
     <meta name="description" content="">
     <title>Loan Health Check</title>
     <link rel="stylesheet" href="nicepage.css" media="screen">
+    <link rel="stylesheet" href="./Spinner.css" media="screen">
 <link rel="stylesheet" href="Loan-Health-Check.css" media="screen">
     <script class="u-script" type="text/javascript" src="jquery.js" defer=""></script>
     <script class="u-script" type="text/javascript" src="nicepage.js" defer=""></script>
@@ -60,6 +61,9 @@
           </div>
         </nav>
       </div></header>
+			<div id="loadingWrapper" class="loading-wrapper" style="display: none;">
+    												<div class="spinner"></div>
+													</div>
     <section class="u-clearfix u-custom-color-5 u-section-1" id="carousel_fe60">
       <div class="u-clearfix u-sheet u-valign-middle-sm u-valign-middle-xs u-sheet-1">
         <div class="data-layout-selected u-clearfix u-expanded-width u-gutter-0 u-layout-wrap u-layout-wrap-1">
@@ -107,9 +111,9 @@
                             <input type="number" placeholder="OTP" id="text-8bd3" name="OTP" pattern="[0-9]*" class="u-border-2 u-border-grey-75 u-border-no-left u-border-no-right u-border-no-top u-input u-input-rectangle u-none u-text-grey-60 u-input-3" required="required">
                           </div>
 													<div class="u-align-center-lg u-align-center-md u-align-center-sm u-align-center-xl u-align-left-xs u-form-group u-form-submit u-label-top u-form-group-11">
-														<a href="#" class="u-active-palette-1-dark-3 u-border-none u-btn u-btn-round u-btn-step u-btn-step-next u-button-style u-hover-palette-1-dark-3 u-palette-1-base u-radius u-text-active-white u-text-body-alt-color u-text-hover-white u-btn-1" id="verifyOtp">Verify OTP<br>
+														<a href="#" class="u-active-palette-1-dark-3 u-border-none u-btn u-btn-round u-btn-step u-btn-step-next u-button-style u-hover-palette-1-dark-3 u-palette-1-base u-radius u-text-active-white u-text-body-alt-color u-text-hover-white u-btn-1" id="verifyOtp" onClick="verifyOTP()">Verify OTP<br>
 														</a>
-														<a href="#" class="u-active-palette-1-dark-3 u-border-none u-btn u-btn-round u-btn-step u-btn-step-prev u-button-style u-hover-palette-1-dark-3 u-palette-1-base u-radius u-text-active-white u-text-body-alt-color u-text-hover-white u-hidden u-btn-1"><span class="u-icon"></span>&nbsp;Back
+														<a href="#" class="u-active-palette-1-dark-3 u-border-none u-btn u-btn-round u-btn-step u-btn-step-prev u-button-style u-hover-palette-1-dark-3 u-palette-1-base u-radius u-text-active-white u-text-body-alt-color u-text-hover-white u-hidden u-btn-1" onClick="back()"><span class="u-icon"></span>&nbsp;Back
 														</a>
 													</div>
                         </div>
