@@ -2,13 +2,21 @@ function generateOTP() {
 	const generateOTPButton = document.getElementById("generateOtp");
 	const loadingWrapper = document.getElementById("loadingWrapper");
 
-	generateOTPSuccess(loadingWrapper, generateOTPButton);
-	return;
-	generateOTPButton.classList.remove("u-btn-step-next");
-	loadingWrapper.style.display = "flex";
-  const mobileNumber = formatPhoneNumber(
+	const mobileNumber = formatPhoneNumber(
     document.getElementById("email-5a14").value
   );
+	const phonePattern = /^(\+61\d{9}|0\d{9})$/;
+	
+	generateOTPButton.classList.remove("u-btn-step-next");
+	if (!phonePattern.test(mobileNumber)) {
+    alert("Please enter a phone number.");
+    return false;
+  }
+
+	// generateOTPSuccess(loadingWrapper, generateOTPButton);
+	// return;
+	loadingWrapper.style.display = "flex";
+
   const data = {
     mobileNumber: mobileNumber,
   };
@@ -66,8 +74,8 @@ function verifyOTP() {
 
   const verifyOTPButton = document.getElementById("verifyOtp");
 	const loadingWrapper = document.getElementById("loadingWrapper");
-	verifyOTPSuccess(loadingWrapper, verifyOTPButton);
-	return;
+	// verifyOTPSuccess(loadingWrapper, verifyOTPButton);
+	// return;
 
 
 	loadingWrapper.style.display = "flex";
@@ -147,6 +155,7 @@ function toggleVisibility() {
     calculateMonthlyRepayment();
     calculatePotentialRepaymentAmount();
   }
+	window.scrollTo({ top: 0, behavior: 'smooth' });
 
   // // Show the hidden section
   // document.getElementById('sec-4977').style.display = 'block';
