@@ -422,16 +422,10 @@
 .u-section-2 .u-text-9 {
   margin-left: 0;
   font-size: 1.25rem;
-  font-weight: 400;
-}
-
-.u-section-2 .u-text-10 {
-  margin-left: 0;
-  font-size: 1.25rem;
   font-weight: 700;
 }
 
-.u-section-2 .u-form-group-10 {
+.u-section-2 .u-form-group-9 {
   margin-left: 0;
   font-weight: 700;
   font-size: 1.25rem;
@@ -547,11 +541,7 @@
     font-size: 1rem;
   }
 
-  .u-section-2 .u-text-10 {
-    font-size: 1rem;
-  }
-
-  .u-section-2 .u-form-group-10 {
+  .u-section-2 .u-form-group-9 {
     font-size: 1rem;
   }
 
@@ -569,7 +559,7 @@
     width: 320px;
   }
 
-  .u-section-2 .u-text-10 {
+  .u-section-2 .u-text-9 {
     font-size: 1.25rem;
   }
 }

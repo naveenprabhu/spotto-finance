@@ -252,10 +252,10 @@ function calculatePotentialRepaymentAmount() {
   ).textContent = `${formatCurrency(
     potentialMonthlyRepayment.toFixed(2)
   )}/month`;
-  const totalSavings = yearlySavings + 3000 + 2000;
+  const totalSavings = yearlySavings + 6000;
   document.getElementById(
     "totalSavingsAmount"
-  ).textContent = `Total Potential Savings: ${formatCurrency(
+  ).textContent = `Total Potential Savings: upto ${formatCurrency(
     totalSavings.toFixed(2)
   )}*`;
 }
