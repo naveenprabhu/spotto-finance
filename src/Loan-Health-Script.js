@@ -2,8 +2,8 @@ function generateOTP() {
 	const generateOTPButton = document.getElementById("generateOtp");
 	const loadingWrapper = document.getElementById("loadingWrapper");
 
-	// generateOTPSuccess(loadingWrapper, generateOTPButton);
-	// return;
+	generateOTPSuccess(loadingWrapper, generateOTPButton);
+	return;
 	generateOTPButton.classList.remove("u-btn-step-next");
 	loadingWrapper.style.display = "flex";
   const mobileNumber = formatPhoneNumber(
@@ -66,8 +66,8 @@ function verifyOTP() {
 
   const verifyOTPButton = document.getElementById("verifyOtp");
 	const loadingWrapper = document.getElementById("loadingWrapper");
-	// verifyOTPSuccess(loadingWrapper, verifyOTPButton);
-	// return;
+	verifyOTPSuccess(loadingWrapper, verifyOTPButton);
+	return;
 
 
 	loadingWrapper.style.display = "flex";
@@ -274,8 +274,131 @@ function formatPhoneNumber(phoneNumber) {
 	return cleanedNumber;
 }
 
-// Example usage
-let phoneNumber = '0452456078'; // Input number
-let formattedNumber = formatPhoneNumber(phoneNumber); // Format it
-console.log(formattedNumber); // Outputs: +61452456078
+function submitLoanComparison(){
+	const viewResultButton = document.getElementById("viewResult");
+	viewResultButton.classList.remove("u-btn-submit");
+	viewResultButton.classList.remove("u-btn-step-next");
 
+	const loadingWrapper = document.getElementById("loadingWrapper");
+	const form = document.getElementById('LoanHealthCheck');
+	const name = document.getElementById('name-5a14').value;
+	const mobileNumber = document.getElementById('email-5a14').value;
+	const loanAmount = document.getElementById('text-7847').value;
+	const interestRate = document.getElementById('text-6839').value;
+	const propertyAddress = document.getElementById('text-8bd3').value;
+
+	loadingWrapper.style.display = "flex";
+
+	const data = {
+		operationName: 'LoanHealthCheck',
+		name: name,
+		mobileNumber: mobileNumber,
+		loanAmount: loanAmount,
+		interestRate: interestRate,
+		propertyAddress: propertyAddress
+	}
+
+
+	fetch(
+    "https://9v4qfkzq5g.execute-api.ap-southeast-2.amazonaws.com/dev/sendemail",
+    {
+      method: "POST", 
+      headers: {
+        "Content-Type": "application/json", 
+      },
+      body: JSON.stringify(data),
+    }
+  )
+    .then((response) => {
+			if (response.ok) {
+				// If status is 200-299, proceed
+				return response.json();
+			} else {
+				// If status is outside 200 range, throw an error
+				throw new Error(`HTTP status ${response.status}`);
+			}
+		}) 
+    .then((data) => {
+			loadingWrapper.style.display = "none";
+			toggleVisibility();
+      console.log("Success:", data); 
+    })
+    .catch((error) => {
+			loadingWrapper.style.display = "none";
+			toggleVisibility();
+      console.error("Error:", error); 
+    });
+
+}
+
+function submitLoanComparisonCallBack(event){
+	const viewResultButton = document.getElementById("viewResult");
+	viewResultButton.classList.remove("u-btn-submit");
+	viewResultButton.classList.remove("u-btn-step-next");
+
+	const loadingWrapper = document.getElementById("loadingWrapper");
+	const thankyou = document.getElementById("thankyou");
+	const form = document.getElementById('LoanHealthCheck');
+	const name = document.getElementById('name-5a14').value;
+	const mobileNumber = document.getElementById('email-5a14').value;
+	const loanAmount = document.getElementById('text-7847').value;
+	const interestRate = document.getElementById('text-6839').value;
+	const propertyAddress = document.getElementById('text-8bd3').value;
+	const potentialRepayment = document.getElementById('monthlyPotentialRepayment').value;
+	const interestSavings = document.getElementById('savingsAmount').value;
+
+	loadingWrapper.style.display = "flex";
+	thankyou.classList.toggle("u-form-send-message"); // Toggles the visibility class
+
+
+	const data = {
+		operationName: 'LoanHealthCheckCallBack',
+		name: name,
+		mobileNumber: mobileNumber,
+		loanAmount: loanAmount,
+		interestRate: interestRate,
+		propertyAddress: propertyAddress,
+		potentialRepayment: potentialRepayment,
+		interestSavings: interestSavings
+	}
+
+
+	fetch(
+    "https://9v4qfkzq5g.execute-api.ap-southeast-2.amazonaws.com/dev/sendemail",
+    {
+      method: "POST", 
+      headers: {
+        "Content-Type": "application/json", 
+      },
+      body: JSON.stringify(data),
+    }
+  )
+    .then((response) => {
+			if (response.ok) {
+				// If status is 200-299, proceed
+				return response.json();
+			} else {
+				// If status is outside 200 range, throw an error
+				throw new Error(`HTTP status ${response.status}`);
+			}
+		}) 
+    .then((data) => {
+			thankyou.style.display = "block";
+			loadingWrapper.style.display = "none";
+      console.log("Success:", data); 
+    })
+    .catch((error) => {
+			thankyou.style.display = "block";
+			loadingWrapper.style.display = "none";
+      console.error("Error:", error); 
+    });
+
+}
+
+function onSubmit(event) {
+console.log('onSubmit triggered')
+}
+
+function submitRefinanceRquestCallback(event){
+	alert("I ma submitRefinanceRquestCallback")
+}
