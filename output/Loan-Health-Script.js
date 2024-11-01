@@ -2,7 +2,8 @@ function generateOTP() {
 	const generateOTPButton = document.getElementById("generateOtp");
 	const loadingWrapper = document.getElementById("loadingWrapper");
 
-
+	// generateOTPSuccess(loadingWrapper, generateOTPButton);
+	// return;
 	generateOTPButton.classList.remove("u-btn-step-next");
 	loadingWrapper.style.display = "flex";
   const mobileNumber = formatPhoneNumber(
@@ -43,6 +44,19 @@ function generateOTP() {
     });
 }
 
+function generateOTPSuccess(loadingWrapper, generateOTPButton){
+		loadingWrapper.style.display = "none";
+			generateOTPButton.classList.add("u-btn-step-next");
+			generateOTPButton.onclick = null;
+			generateOTPButton.click();
+}
+
+function verifyOTPSuccess(loadingWrapper, verifyOTPButton){
+	verifyOTPButton.classList.add("u-btn-step-next");
+			verifyOTPButton.onclick = null;
+			verifyOTPButton.click();
+			loadingWrapper.style.display = "none";
+}
 function back() {
 	const generateOTPButton = document.getElementById("generateOtp");
 	generateOTPButton.onclick = generateOTP;
@@ -52,6 +66,8 @@ function verifyOTP() {
 
   const verifyOTPButton = document.getElementById("verifyOtp");
 	const loadingWrapper = document.getElementById("loadingWrapper");
+	// verifyOTPSuccess(loadingWrapper, verifyOTPButton);
+	// return;
 
 
 	loadingWrapper.style.display = "flex";
