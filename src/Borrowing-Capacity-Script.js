@@ -1,3 +1,61 @@
+document.addEventListener("DOMContentLoaded", function() {
+	isUserDataNeeded(); // Call the function defined in utils.js
+});
+
+function isUserDataNeeded() {
+	const youTab = document.getElementById("you-tab");
+	const propertyTab = document.getElementById("property-tab");
+	if(getLocalStorageWithExpiry("userData")){
+
+		youTab.classList.remove("u-active");
+		propertyTab.classList.remove("u-active");
+		propertyTab.classList.add("u-active");
+	} else {
+		youTab.classList.remove("u-active");
+		propertyTab.classList.remove("u-active");
+		youTab.classList.add("u-active");
+	}
+
+}
+
+function setLocalStorageWithExpiry(key, name, mobileNumber, ttl) {
+  const now = new Date();
+
+  // `ttl` is the time-to-live in milliseconds
+  const item = {
+    name: name,
+    mobileNumber: mobileNumber,
+    expiry: now.getTime() + ttl,
+  };
+  localStorage.setItem(key, JSON.stringify(item));
+}
+
+function getLocalStorageWithExpiry(key) {
+  const itemStr = localStorage.getItem(key);
+	console.log(itemStr);
+
+  // If the item doesn’t exist, return null
+  if (!itemStr) {
+    return null;
+  }
+
+  const item = JSON.parse(itemStr);
+  const now = new Date();
+
+  // Compare the expiry time of the item with the current time
+  if (now.getTime() > item.expiry) {
+		console.log("exipred");
+
+    // If the item is expired, remove it from storage and return null
+    localStorage.removeItem(key);
+    return null;
+  }
+	console.log("retrun value");
+
+
+  return item;
+}
+
 function toggleVisibilityForBorrowingPower() {
   const viewResultButton = document.getElementById("viewResult");
 	const income = parseFloat(document.getElementById("text-8bd4").value);
@@ -73,16 +131,28 @@ function submitBorrowingCapacity(){
 	const viewResultButton = document.getElementById("viewResult");
 	viewResultButton.classList.remove("u-btn-submit");
 	viewResultButton.classList.remove("u-btn-step-next");
+	const storedUserData = getLocalStorageWithExpiry("userData");
+
 
 	const loadingWrapper = document.getElementById("loadingWrapper");
 	const form = document.getElementById('BorrowingCapacityCheck');
-	const name = document.getElementById('name-5a14').value;
-	const mobileNumber = document.getElementById('email-5a14').value;
+	let name = document.getElementById('name-5a14').value;
+	let mobileNumber = document.getElementById('email-5a14').value;
 	const income = document.getElementById('text-8bd4').value;
 	const expense = document.getElementById('text-7847').value;
 	const dependants = document.getElementById('select-178e').value;
 
 	loadingWrapper.style.display = "flex";
+
+	if(!storedUserData){
+		console.log("userdata not stored");
+		setLocalStorageWithExpiry("userData", name, mobileNumber, 3600000);
+	} else {
+		console.log("user data is stored" );
+		name = storedUserData.name;
+		mobileNumber = storedUserData.mobileNumber;
+	}
+
 
 	const data = {
 		operationName: 'BorrowingCapacityCheck',
@@ -130,18 +200,32 @@ function submitBorrowingCapacityCallBack(event){
 	const viewResultButton = document.getElementById("viewResult");
 	viewResultButton.classList.remove("u-btn-submit");
 	viewResultButton.classList.remove("u-btn-step-next");
+	const storedUserData = getLocalStorageWithExpiry("userData");
+
 
 	const loadingWrapper = document.getElementById("loadingWrapper");
 	const thankyou = document.getElementById("thankyou");
 	const form = document.getElementById('LoanHealthCheck');
-	const name = document.getElementById('name-5a14').value;
-	const mobileNumber = document.getElementById('email-5a14').value;
+	let name = document.getElementById('name-5a14').value;
+	let mobileNumber = document.getElementById('email-5a14').value;
 	const income = document.getElementById('text-8bd4').value;
 	const expense = document.getElementById('text-7847').value;
 	const dependants = document.getElementById('select-178e').value;
+	const borrowingCapacity = document.getElementById('borrowingCapacity').textContent;
 
 	loadingWrapper.style.display = "flex";
 	thankyou.classList.toggle("u-form-send-message"); // Toggles the visibility class
+
+
+
+	if(!storedUserData){
+		console.log("userdata not stored");
+		setLocalStorageWithExpiry("userData", name, mobileNumber, 3600000);
+	} else {
+		console.log("user data is stored" );
+		name = storedUserData.name;
+		mobileNumber = storedUserData.mobileNumber;
+	}
 
 
 	const data = {
@@ -150,7 +234,8 @@ function submitBorrowingCapacityCallBack(event){
 		mobileNumber: mobileNumber,
 		income: income,
 		expense: expense,
-		dependants: dependants
+		dependants: dependants,
+		borrowingCapacity: borrowingCapacity
 	}
 
 

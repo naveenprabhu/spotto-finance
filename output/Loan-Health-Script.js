@@ -1,3 +1,63 @@
+
+document.addEventListener("DOMContentLoaded", function() {
+	isUserDataNeeded(); // Call the function defined in utils.js
+});
+
+function isUserDataNeeded() {
+	const youTab = document.getElementById("you-tab");
+	const propertyTab = document.getElementById("property-tab");
+	if(getLocalStorageWithExpiry("userData")){
+
+		youTab.classList.remove("u-active");
+		propertyTab.classList.remove("u-active");
+		propertyTab.classList.add("u-active");
+	} else {
+		youTab.classList.remove("u-active");
+		propertyTab.classList.remove("u-active");
+		youTab.classList.add("u-active");
+	}
+
+}
+
+function setLocalStorageWithExpiry(key, name, mobileNumber, ttl) {
+  const now = new Date();
+
+  // `ttl` is the time-to-live in milliseconds
+  const item = {
+    name: name,
+    mobileNumber: mobileNumber,
+    expiry: now.getTime() + ttl,
+  };
+  localStorage.setItem(key, JSON.stringify(item));
+}
+
+function getLocalStorageWithExpiry(key) {
+  const itemStr = localStorage.getItem(key);
+	console.log(itemStr);
+
+  // If the item doesn’t exist, return null
+  if (!itemStr) {
+    return null;
+  }
+
+  const item = JSON.parse(itemStr);
+  const now = new Date();
+
+  // Compare the expiry time of the item with the current time
+  if (now.getTime() > item.expiry) {
+		console.log("exipred");
+
+    // If the item is expired, remove it from storage and return null
+    localStorage.removeItem(key);
+    return null;
+  }
+	console.log("retrun value");
+
+
+  return item;
+}
+
+
 function generateOTP() {
 	const generateOTPButton = document.getElementById("generateOtp");
 	const loadingWrapper = document.getElementById("loadingWrapper");
@@ -156,6 +216,7 @@ function toggleVisibility() {
     calculatePotentialRepaymentAmount();
   }
 	window.scrollTo({ top: 0, behavior: 'smooth' });
+	
 
   // // Show the hidden section
   // document.getElementById('sec-4977').style.display = 'block';
@@ -252,7 +313,7 @@ function calculatePotentialRepaymentAmount() {
   ).textContent = `${formatCurrency(
     potentialMonthlyRepayment.toFixed(2)
   )}/month`;
-  const totalSavings = yearlySavings + 6000;
+  const totalSavings = yearlySavings + 5000;
   document.getElementById(
     "totalSavingsAmount"
   ).textContent = `Total Potential Savings: upto ${formatCurrency(
@@ -288,15 +349,28 @@ function submitLoanComparison(){
 	viewResultButton.classList.remove("u-btn-submit");
 	viewResultButton.classList.remove("u-btn-step-next");
 
+	const storedUserData = getLocalStorageWithExpiry("userData");
 	const loadingWrapper = document.getElementById("loadingWrapper");
 	const form = document.getElementById('LoanHealthCheck');
-	const name = document.getElementById('name-5a14').value;
-	const mobileNumber = document.getElementById('email-5a14').value;
+	let name = document.getElementById('name-5a14').value;
+	let mobileNumber = document.getElementById('email-5a14').value;
 	const loanAmount = document.getElementById('text-7847').value;
 	const interestRate = document.getElementById('text-6839').value;
 	const propertyAddress = document.getElementById('text-8bd3').value;
 
 	loadingWrapper.style.display = "flex";
+
+	
+
+
+	if(!storedUserData){
+		console.log("userdata not stored");
+		setLocalStorageWithExpiry("userData", name, mobileNumber, 3600000);
+	} else {
+		console.log("user data is stored" );
+		name = storedUserData.name;
+		mobileNumber = storedUserData.mobileNumber;
+	}
 
 	const data = {
 		operationName: 'LoanHealthCheck',
@@ -344,20 +418,32 @@ function submitLoanComparisonCallBack(event){
 	const viewResultButton = document.getElementById("viewResult");
 	viewResultButton.classList.remove("u-btn-submit");
 	viewResultButton.classList.remove("u-btn-step-next");
+	const storedUserData = getLocalStorageWithExpiry("userData");
+
 
 	const loadingWrapper = document.getElementById("loadingWrapper");
 	const thankyou = document.getElementById("thankyou");
 	const form = document.getElementById('LoanHealthCheck');
-	const name = document.getElementById('name-5a14').value;
-	const mobileNumber = document.getElementById('email-5a14').value;
+	let name = document.getElementById('name-5a14').value;
+	let mobileNumber = document.getElementById('email-5a14').value;
 	const loanAmount = document.getElementById('text-7847').value;
 	const interestRate = document.getElementById('text-6839').value;
 	const propertyAddress = document.getElementById('text-8bd3').value;
-	const potentialRepayment = document.getElementById('monthlyPotentialRepayment').value;
-	const interestSavings = document.getElementById('savingsAmount').value;
+	const potentialRepayment = document.getElementById('monthlyPotentialRepayment').textContent;
+	const currentRepayment = document.getElementById('monthlyRepayment').textContent;
+	const interestSavings = document.getElementById('savingsAmount').textContent;
 
 	loadingWrapper.style.display = "flex";
 	thankyou.classList.toggle("u-form-send-message"); // Toggles the visibility class
+
+	if(!storedUserData){
+		console.log("userdata not stored");
+		setLocalStorageWithExpiry("userData", name, mobileNumber, 3600000);
+	} else {
+		console.log("user data is stored" );
+		name = storedUserData.name;
+		mobileNumber = storedUserData.mobileNumber;
+	}
 
 
 	const data = {
@@ -367,6 +453,7 @@ function submitLoanComparisonCallBack(event){
 		loanAmount: loanAmount,
 		interestRate: interestRate,
 		propertyAddress: propertyAddress,
+		currentRepayment: currentRepayment,
 		potentialRepayment: potentialRepayment,
 		interestSavings: interestSavings
 	}
