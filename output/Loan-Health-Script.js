@@ -5,7 +5,7 @@ function generateOTP() {
 	const mobileNumber = formatPhoneNumber(
     document.getElementById("email-5a14").value
   );
-	const phonePattern = /^(\+61\d{8,10}|0\d{9})$/;
+	const phonePattern = /^(\+61\d{9}|0\d{9})$/;
 	
 	generateOTPButton.classList.remove("u-btn-step-next");
 	if (!phonePattern.test(mobileNumber)) {
