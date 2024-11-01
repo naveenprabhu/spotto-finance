@@ -230,7 +230,7 @@ function calculatePotentialRepaymentAmount() {
   if (yearlySavings > 0) {
     document.getElementById(
       "savingsAmount"
-    ).textContent = `$${yearlySavings.toFixed(2)}/year`;
+    ).textContent = `${formatCurrency(yearlySavings.toFixed(2))}/year`;
   } else {
     // If there are no savings
     document.getElementById("savingsAmount").textContent = `$0/year`;
