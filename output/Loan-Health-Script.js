@@ -143,7 +143,7 @@ function verifyOTP() {
   const mobileNumber = formatPhoneNumber(
     document.getElementById("email-5a14").value
   );
-	const code = document.getElementById("text-8bd4").value;
+	const code = document.getElementById("text-otp").value;
   const data = {
     mobileNumber: mobileNumber,
 		code: code
