@@ -1,12 +1,13 @@
 document.addEventListener("DOMContentLoaded", function() {
 	isUserDataNeeded(); // Call the function defined in utils.js
 });
+logScreenView("Borrowing Capacity Check");
 
 function isUserDataNeeded() {
 	const youTab = document.getElementById("you-tab");
 	const propertyTab = document.getElementById("property-tab");
 	if(getLocalStorageWithExpiry("userData")){
-
+		logUserAction("OTP skipped - Borrowing Capacity Check");
 		youTab.classList.remove("u-active");
 		propertyTab.classList.remove("u-active");
 		propertyTab.classList.add("u-active");
@@ -186,11 +187,13 @@ function submitBorrowingCapacity(){
     .then((data) => {
 			loadingWrapper.style.display = "none";
 			toggleVisibilityForBorrowingPower();
+			logApiSuccess("Send email - Borrowing Capacity");
       console.log("Success:", data); 
     })
     .catch((error) => {
 			loadingWrapper.style.display = "none";
 			toggleVisibilityForBorrowingPower();
+			logApiFailure("Send email - Borrowing Capacity");
       console.error("Error:", error); 
     });
 
@@ -261,11 +264,13 @@ function submitBorrowingCapacityCallBack(event){
     .then((data) => {
 			thankyou.style.display = "block";
 			loadingWrapper.style.display = "none";
+			logApiSuccess("Send email - Borrowing Capacity Callback");
       console.log("Success:", data); 
     })
     .catch((error) => {
 			thankyou.style.display = "block";
 			loadingWrapper.style.display = "none";
+			logApiFailure("Send email - Borrowing Capacity Callback");
       console.error("Error:", error); 
     });
 

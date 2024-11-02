@@ -2,12 +2,13 @@
 document.addEventListener("DOMContentLoaded", function() {
 	isUserDataNeeded(); // Call the function defined in utils.js
 });
+logScreenView("Loan Health Check");
 
 function isUserDataNeeded() {
 	const youTab = document.getElementById("you-tab");
 	const propertyTab = document.getElementById("property-tab");
 	if(getLocalStorageWithExpiry("userData")){
-
+		logUserAction("OTP skipped - Loan Health Check");
 		youTab.classList.remove("u-active");
 		propertyTab.classList.remove("u-active");
 		propertyTab.classList.add("u-active");
@@ -59,6 +60,7 @@ function getLocalStorageWithExpiry(key) {
 
 
 function generateOTP() {
+	logButtonClick("Generate OTP");
 	const generateOTPButton = document.getElementById("generateOtp");
 	const loadingWrapper = document.getElementById("loadingWrapper");
 
@@ -104,10 +106,12 @@ function generateOTP() {
 			generateOTPButton.classList.add("u-btn-step-next");
 			generateOTPButton.onclick = null;
 			generateOTPButton.click();
+			logApiSuccess("Send OTP");
       console.log("Success:", data); 
     })
     .catch((error) => {
 			loadingWrapper.style.display = "none";
+			logApiFailure("Send OTP");
       console.error("Error:", error); 
     });
 }
@@ -131,7 +135,7 @@ function back() {
 
 }
 function verifyOTP() {
-
+	logButtonClick("Verify OTP");
   const verifyOTPButton = document.getElementById("verifyOtp");
 	const loadingWrapper = document.getElementById("loadingWrapper");
 	// verifyOTPSuccess(loadingWrapper, verifyOTPButton);
@@ -172,9 +176,11 @@ function verifyOTP() {
 			verifyOTPButton.onclick = null;
 			verifyOTPButton.click();
 			loadingWrapper.style.display = "none";
+			logApiSuccess("Verify OTP");
       console.log("Success:", data); 
     })
     .catch((error) => {
+			logApiFailure("Verifty OTP");
 			loadingWrapper.style.display = "none";
 			alert("Invalid OTP. Try again.");
       console.error("Error:", error); 
@@ -404,10 +410,12 @@ function submitLoanComparison(){
     .then((data) => {
 			loadingWrapper.style.display = "none";
 			toggleVisibility();
+			logApiSuccess("Send email - Loan Health Check");
       console.log("Success:", data); 
     })
     .catch((error) => {
 			loadingWrapper.style.display = "none";
+			logApiFailure("Send email - Loan Health Check");
 			toggleVisibility();
       console.error("Error:", error); 
     });
