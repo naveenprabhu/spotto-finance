@@ -1,3 +1,7 @@
+import AnalyticsService from './analyticsservice.js';
+
+AnalyticsService.logScreenView('Borrowing-Capacity-Check');
+
 document.addEventListener("DOMContentLoaded", function() {
 	isUserDataNeeded(); // Call the function defined in utils.js
 });

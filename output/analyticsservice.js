@@ -7,7 +7,14 @@ const AnalyticsService = {
             screen_name: screenName,
             screen_class: 'Main'
         });
-    }
+    },
+
+		logButtonTap(buttonName) {
+			logEvent(analytics, 'button_click', { button_name: buttonName });
+			console.log("Button click event logged:", buttonName);
+	}
+
+		
 };
 
 export default AnalyticsService;

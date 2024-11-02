@@ -1,4 +1,8 @@
 
+import AnalyticsService from './analyticsservice.js';
+
+AnalyticsService.logScreenView('Loan-Health-Check');
+
 document.addEventListener("DOMContentLoaded", function() {
 	isUserDataNeeded(); // Call the function defined in utils.js
 });
@@ -58,7 +62,8 @@ function getLocalStorageWithExpiry(key) {
 }
 
 
-function generateOTP() {
+export function generateOTP() {
+	AnalyticsService.logButtonTap("GenerateOTP");
 	const generateOTPButton = document.getElementById("generateOtp");
 	const loadingWrapper = document.getElementById("loadingWrapper");
 
