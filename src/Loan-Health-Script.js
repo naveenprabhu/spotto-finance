@@ -267,14 +267,14 @@ function calculateMonthlyRepayment() {
   // Display the monthly repayment rounded to two decimal places
   document.getElementById("monthlyRepayment").textContent = `${formatCurrency(
     monthlyRepayment.toFixed(2)
-  )}/month`;
+  )} / month`;
   return monthlyRepayment;
 }
 
 function calculatePotentialRepaymentAmount() {
   // Get values from the input fields
   const principal = parseFloat(document.getElementById("text-7847").value);
-  const annualInterestRate = 5.79;
+  const annualInterestRate = 4.89;
   const loanTermYears = 30; // Fixed loan term of 30 years
 
   // Validate input values
@@ -306,10 +306,10 @@ function calculatePotentialRepaymentAmount() {
   if (yearlySavings > 0) {
     document.getElementById(
       "savingsAmount"
-    ).textContent = `${formatCurrency(yearlySavings.toFixed(2))}/year`;
+    ).textContent = `${formatCurrency(yearlySavings.toFixed(2))} / year`;
   } else {
     // If there are no savings
-    document.getElementById("savingsAmount").textContent = `$0/year`;
+    document.getElementById("savingsAmount").textContent = `$0 / year`;
     potentialMonthlyRepayment = monthlyRepayment;
   }
 
@@ -318,7 +318,7 @@ function calculatePotentialRepaymentAmount() {
     "monthlyPotentialRepayment"
   ).textContent = `${formatCurrency(
     potentialMonthlyRepayment.toFixed(2)
-  )}/month`;
+  )} / month`;
   const totalSavings = yearlySavings + 5000;
   document.getElementById(
     "totalSavingsAmount"

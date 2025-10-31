@@ -22,5 +22,5 @@ dev_deploy: build
 	cp -r ./output/ /opt/homebrew/var/www
 
 prod_deploy: build
-	aws s3 sync ./output/ s3://spottofinance.com.au
-	aws cloudfront create-invalidation --distribution-id=E17ZYXG5PGP73T --paths "/*"
+	aws s3 sync ./output/ s3://spottofinance.com.au --profile qtechit
+	aws cloudfront create-invalidation --distribution-id=E17ZYXG5PGP73T --paths "/*" --profile qtechit
