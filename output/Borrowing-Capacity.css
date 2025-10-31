@@ -1,4 +1,4 @@
- .u-section-1 {
+.u-section-1 {
   background-image: none;
 }
 
@@ -37,7 +37,7 @@
   --bar-default-color: #c0c0c0;
   --bar-active-color: #478ac9;
   --step-icon-size: 40px;
-  
+
   --step-icon-border-width: 0px;
   --step-icon-border-radius: 50px;
   --step-icon-border-color: #808080;
@@ -172,7 +172,7 @@
   text-transform: uppercase;
   letter-spacing: 1px;
   background-image: none;
-  box-shadow: 6px 6px 0px 0px rgba(233,242,250,1);
+  box-shadow: 6px 6px 0px 0px rgba(233, 242, 250, 1);
   padding-top: 14px;
   padding-bottom: 14px;
   --radius: 20px;
@@ -184,7 +184,7 @@
   text-transform: uppercase;
   letter-spacing: 1px;
   background-image: none;
-  box-shadow: 6px 6px 0px 0px rgba(233,242,250,1);
+  box-shadow: 6px 6px 0px 0px rgba(233, 242, 250, 1);
   padding-top: 14px;
   padding-bottom: 14px;
   --radius: 20px;
@@ -196,7 +196,7 @@
   text-transform: uppercase;
   letter-spacing: 1px;
   background-image: none;
-  box-shadow: 6px 6px 0px 0px rgba(233,242,250,1);
+  box-shadow: 6px 6px 0px 0px rgba(233, 242, 250, 1);
   padding-top: 14px;
   padding-bottom: 14px;
   --radius: 20px;
@@ -305,7 +305,8 @@
   .u-section-1 .u-text-7 {
     font-size: 1.125rem;
   }
-} .u-section-2 {
+}
+.u-section-2 {
   background-image: none;
 }
 
@@ -345,7 +346,7 @@
   --bar-default-color: #c0c0c0;
   --bar-active-color: #478ac9;
   --step-icon-size: 36px;
-  
+
   --step-icon-border-width: 0px;
   --step-icon-border-radius: 50px;
   --step-icon-border-color: #808080;
@@ -399,7 +400,7 @@
   text-transform: uppercase;
   letter-spacing: 1px;
   background-image: none;
-  box-shadow: 6px 6px 0px 0px rgba(233,242,250,1);
+  box-shadow: 6px 6px 0px 0px rgba(233, 242, 250, 1);
   padding-top: 14px;
   padding-bottom: 14px;
   font-weight: 700;

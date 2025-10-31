@@ -1,4 +1,4 @@
- .u-section-1 {
+.u-section-1 {
   background-image: none;
 }
 
@@ -37,7 +37,7 @@
   --bar-default-color: #c0c0c0;
   --bar-active-color: #478ac9;
   --step-icon-size: 40px;
-  
+
   --step-icon-border-width: 0px;
   --step-icon-border-radius: 50px;
   --step-icon-border-color: #808080;
@@ -179,7 +179,7 @@
   text-transform: uppercase;
   letter-spacing: 1px;
   background-image: none;
-  box-shadow: 6px 6px 0px 0px rgba(233,242,250,1);
+  box-shadow: 6px 6px 0px 0px rgba(233, 242, 250, 1);
   padding-top: 14px;
   padding-bottom: 14px;
   --radius: 20px;
@@ -191,7 +191,7 @@
   text-transform: uppercase;
   letter-spacing: 1px;
   background-image: none;
-  box-shadow: 6px 6px 0px 0px rgba(233,242,250,1);
+  box-shadow: 6px 6px 0px 0px rgba(233, 242, 250, 1);
   padding-top: 14px;
   padding-bottom: 14px;
   --radius: 20px;
@@ -203,7 +203,7 @@
   text-transform: uppercase;
   letter-spacing: 1px;
   background-image: none;
-  box-shadow: 6px 6px 0px 0px rgba(233,242,250,1);
+  box-shadow: 6px 6px 0px 0px rgba(233, 242, 250, 1);
   padding-top: 14px;
   padding-bottom: 14px;
   --radius: 20px;
@@ -316,7 +316,8 @@
   .u-section-1 .u-text-7 {
     font-size: 1.125rem;
   }
-} .u-section-2 {
+}
+.u-section-2 {
   background-image: none;
 }
 
@@ -356,7 +357,7 @@
   --bar-default-color: #c0c0c0;
   --bar-active-color: #478ac9;
   --step-icon-size: 36px;
-  
+
   --step-icon-border-width: 0px;
   --step-icon-border-radius: 50px;
   --step-icon-border-color: #808080;
@@ -436,7 +437,7 @@
   text-transform: uppercase;
   letter-spacing: 1px;
   background-image: none;
-  box-shadow: 6px 6px 0px 0px rgba(233,242,250,1);
+  box-shadow: 6px 6px 0px 0px rgba(233, 242, 250, 1);
   padding-top: 14px;
   padding-bottom: 14px;
   font-weight: 700;
@@ -562,4 +563,34 @@
   .u-section-2 .u-text-9 {
     font-size: 1.25rem;
   }
+}
+
+/* Make input background transparent */
+.form-floating > .form-control {
+  background-color: transparent !important;
+  border: 1px solid rgba(0, 0, 0, 0.3); /* subtle black border */
+  color: #000; /* black text */
+}
+
+/* Remove Bootstrap's white background from floating label */
+.form-floating label::after {
+  background: transparent !important;
+}
+
+/* Floating label styling */
+.form-floating label {
+  color: rgba(0, 0, 0, 0.7);
+  transition: color 0.2s ease;
+}
+
+/* Label turns solid black when active or filled */
+.form-floating > .form-control:focus ~ label,
+.form-floating > .form-control:not(:placeholder-shown) ~ label {
+  color: #000;
+}
+
+/* Focus border highlight */
+.form-control:focus {
+  box-shadow: none;
+  border-color: #000;
 }

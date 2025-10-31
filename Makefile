@@ -9,6 +9,12 @@ help::
 	@echo "make dev_deploy - Deploy the code for dev testing"
 	@echo "---"
 
+format:
+	@echo "Formatting code..."
+	# Example for JavaScript/TypeScript
+	prettier --write "$(SOURCE_DIR)/**/*.{js,ts,jsx,tsx,css,html}"
+	@echo "Formatting complete."
+	
 build:
 	rm -rf $(OUTPUT_DIR)/*
 	@echo "Building the project..."

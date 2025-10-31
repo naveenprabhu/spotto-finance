@@ -1,23 +1,23 @@
-
-document.addEventListener("DOMContentLoaded", function() {
-	isUserDataNeeded(); // Call the function defined in utils.js
+document.addEventListener("DOMContentLoaded", function () {
+  isUserDataNeeded(); // Call the function defined in utils.js
 });
 logScreenView("Loan Health Check");
+const interestInput = document.getElementById('interestRate');
+attachDecimalAutoFormat(interestInput);
 
 function isUserDataNeeded() {
-	const youTab = document.getElementById("you-tab");
-	const propertyTab = document.getElementById("property-tab");
-	if(getLocalStorageWithExpiry("userData")){
-		logUserAction("OTP skipped - Loan Health Check");
-		youTab.classList.remove("u-active");
-		propertyTab.classList.remove("u-active");
-		propertyTab.classList.add("u-active");
-	} else {
-		youTab.classList.remove("u-active");
-		propertyTab.classList.remove("u-active");
-		youTab.classList.add("u-active");
-	}
-
+  const youTab = document.getElementById("you-tab");
+  const propertyTab = document.getElementById("property-tab");
+  if (getLocalStorageWithExpiry("userData")) {
+    logUserAction("OTP skipped - Loan Health Check");
+    youTab.classList.remove("u-active");
+    propertyTab.classList.remove("u-active");
+    propertyTab.classList.add("u-active");
+  } else {
+    youTab.classList.remove("u-active");
+    propertyTab.classList.remove("u-active");
+    youTab.classList.add("u-active");
+  }
 }
 
 function setLocalStorageWithExpiry(key, name, mobileNumber, ttl) {
@@ -34,7 +34,7 @@ function setLocalStorageWithExpiry(key, name, mobileNumber, ttl) {
 
 function getLocalStorageWithExpiry(key) {
   const itemStr = localStorage.getItem(key);
-	console.log(itemStr);
+  console.log(itemStr);
 
   // If the item doesn’t exist, return null
   if (!itemStr) {
@@ -46,38 +46,55 @@ function getLocalStorageWithExpiry(key) {
 
   // Compare the expiry time of the item with the current time
   if (now.getTime() > item.expiry) {
-		console.log("exipred");
+    console.log("exipred");
 
     // If the item is expired, remove it from storage and return null
     localStorage.removeItem(key);
     return null;
   }
-	console.log("retrun value");
-
+  console.log("retrun value");
 
   return item;
 }
 
-
 function generateOTP() {
-	logButtonClick("Generate OTP");
-	const generateOTPButton = document.getElementById("generateOtp");
-	const loadingWrapper = document.getElementById("loadingWrapper");
+  const mobileNumberInput = document.getElementById("mobileNumber");
+  const nameInput = document.getElementById("username");
 
-	const mobileNumber = formatPhoneNumber(
-    document.getElementById("email-5a14").value
-  );
-	const phonePattern = /^(\+61\d{9}|0\d{9})$/;
-	
-	generateOTPButton.classList.remove("u-btn-step-next");
-	if (!phonePattern.test(mobileNumber)) {
-    alert("Please enter a phone number.");
-    return false;
+    // reset previous errors
+  nameInput.classList.remove("is-invalid");
+  mobileNumberInput.classList.remove("is-invalid");
+
+  logButtonClick("Generate OTP");
+  const generateOTPButton = document.getElementById("generateOtp");
+  const loadingWrapper = document.getElementById("loadingWrapper");
+
+  let isValid = true; // track overall form validity
+
+  // Validate Name
+  if (!nameInput.value.trim()) {
+    nameInput.classList.add("is-invalid");
+    isValid = false;
   }
 
-	// generateOTPSuccess(loadingWrapper, generateOTPButton);
-	// return;
-	loadingWrapper.style.display = "flex";
+  const mobileNumber = formatPhoneNumber(
+    document.getElementById("mobileNumber").value,
+  );
+  const phonePattern = /^(\+61\d{9}|0\d{9})$/;
+
+  generateOTPButton.classList.remove("u-btn-step-next");
+  if (!phonePattern.test(mobileNumber)) {
+    // alert("Please enter a phone number.");
+    mobileNumberInput.classList.add("is-invalid");
+    isValid = false;
+  }
+
+  if (!isValid) return false;
+
+ 
+  // generateOTPSuccess(loadingWrapper, generateOTPButton);
+  // return;
+  loadingWrapper.style.display = "flex";
 
   const data = {
     mobileNumber: mobileNumber,
@@ -85,117 +102,124 @@ function generateOTP() {
   fetch(
     "https://9v4qfkzq5g.execute-api.ap-southeast-2.amazonaws.com/dev/sendotp",
     {
-      method: "POST", 
+      method: "POST",
       headers: {
-        "Content-Type": "application/json", 
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
-    }
+    },
   )
     .then((response) => {
-			if (response.ok) {
-				// If status is 200-299, proceed
-				return response.json();
-			} else {
-				// If status is outside 200 range, throw an error
-				throw new Error(`HTTP status ${response.status}`);
-			}
-		}) 
+      if (response.ok) {
+        // If status is 200-299, proceed
+        return response.json();
+      } else {
+        // If status is outside 200 range, throw an error
+        throw new Error(`HTTP status ${response.status}`);
+      }
+    })
     .then((data) => {
-			loadingWrapper.style.display = "none";
-			generateOTPButton.classList.add("u-btn-step-next");
-			generateOTPButton.onclick = null;
-			generateOTPButton.click();
-			logApiSuccess("Send OTP");
-      console.log("Success:", data); 
+      loadingWrapper.style.display = "none";
+      generateOTPButton.classList.add("u-btn-step-next");
+      generateOTPButton.onclick = null;
+      generateOTPButton.click();
+      logApiSuccess("Send OTP");
+      console.log("Success:", data);
     })
     .catch((error) => {
-			loadingWrapper.style.display = "none";
-			logApiFailure("Send OTP");
-      console.error("Error:", error); 
+      loadingWrapper.style.display = "none";
+      logApiFailure("Send OTP");
+      console.error("Error:", error);
     });
 }
 
-function generateOTPSuccess(loadingWrapper, generateOTPButton){
-		loadingWrapper.style.display = "none";
-			generateOTPButton.classList.add("u-btn-step-next");
-			generateOTPButton.onclick = null;
-			generateOTPButton.click();
+function generateOTPSuccess(loadingWrapper, generateOTPButton) {
+  loadingWrapper.style.display = "none";
+  generateOTPButton.classList.add("u-btn-step-next");
+  generateOTPButton.onclick = null;
+  generateOTPButton.click();
 }
 
-function verifyOTPSuccess(loadingWrapper, verifyOTPButton){
-	verifyOTPButton.classList.add("u-btn-step-next");
-			verifyOTPButton.onclick = null;
-			verifyOTPButton.click();
-			loadingWrapper.style.display = "none";
+function verifyOTPSuccess(loadingWrapper, verifyOTPButton) {
+  verifyOTPButton.classList.add("u-btn-step-next");
+  verifyOTPButton.onclick = null;
+  verifyOTPButton.click();
+  loadingWrapper.style.display = "none";
 }
 function back() {
-	const generateOTPButton = document.getElementById("generateOtp");
-	generateOTPButton.onclick = generateOTP;
-
+  const generateOTPButton = document.getElementById("generateOtp");
+  generateOTPButton.onclick = generateOTP;
 }
 function verifyOTP() {
-	logButtonClick("Verify OTP");
+  logButtonClick("Verify OTP");
   const verifyOTPButton = document.getElementById("verifyOtp");
-	const loadingWrapper = document.getElementById("loadingWrapper");
-	// verifyOTPSuccess(loadingWrapper, verifyOTPButton);
-	// return;
+  const loadingWrapper = document.getElementById("loadingWrapper");
+  const otpInput = document.getElementById("text-otp");
+  // verifyOTPSuccess(loadingWrapper, verifyOTPButton);
+  // return;
+  otpInput.classList.remove("is-invalid"); // reset previous error
 
+  if (!otpInput.value.trim()) {
+    otpInput.classList.add("is-invalid"); // show error
+    return false; // stop further processing
+  }
 
-	loadingWrapper.style.display = "flex";
-	verifyOTPButton.classList.remove("u-btn-step-next");
+  loadingWrapper.style.display = "flex";
+  verifyOTPButton.classList.remove("u-btn-step-next");
   const mobileNumber = formatPhoneNumber(
-    document.getElementById("email-5a14").value
+    document.getElementById("mobileNumber").value,
   );
-	const code = document.getElementById("text-otp").value;
+  const code = otpInput.value;
   const data = {
     mobileNumber: mobileNumber,
-		code: code
+    code: code,
   };
   fetch(
     "https://9v4qfkzq5g.execute-api.ap-southeast-2.amazonaws.com/dev/verifyotp",
     {
-      method: "POST", 
+      method: "POST",
       headers: {
-        "Content-Type": "application/json", 
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
-    }
+    },
   )
     .then((response) => {
-			if (response.ok) {
-				// If status is 200-299, proceed
-				return response.json();
-			} else {
-				// If status is outside 200 range, throw an error
-				throw new Error(`HTTP status ${response.status}`);
-			}
-		}) 
+      if (response.ok) {
+        // If status is 200-299, proceed
+        return response.json();
+      } else {
+        // If status is outside 200 range, throw an error
+        throw new Error(`HTTP status ${response.status}`);
+      }
+    })
     .then((data) => {
-			verifyOTPButton.classList.add("u-btn-step-next");
-			verifyOTPButton.onclick = null;
-			verifyOTPButton.click();
-			loadingWrapper.style.display = "none";
-			logApiSuccess("Verify OTP");
-      console.log("Success:", data); 
+      verifyOTPButton.classList.add("u-btn-step-next");
+      verifyOTPButton.onclick = null;
+      verifyOTPButton.click();
+      loadingWrapper.style.display = "none";
+      logApiSuccess("Verify OTP");
+      console.log("Success:", data);
     })
     .catch((error) => {
-			logApiFailure("Verifty OTP");
-			loadingWrapper.style.display = "none";
-			alert("Invalid OTP. Try again.");
-      console.error("Error:", error); 
+      logApiFailure("Verifty OTP");
+      loadingWrapper.style.display = "none";
+      alert("Invalid OTP. Try again.");
+      console.error("Error:", error);
     });
 }
 
 function viewResults(viewResultButton) {
+  
+const loanAmount = document.getElementById("loanAmount").value;
+const interestRate = document.getElementById("interestRate").value;
+
   viewResultButton.classList.remove("u-btn-submit");
   viewResultButton.classList.remove("u-btn-step-next");
   const interestRateNumberPattern = /^\d+(\.\d+)?$/;
   const principalPattern = /^\d+$/;
-  const principal = parseFloat(document.getElementById("text-7847").value);
-  const annualInterestRate = parseFloat(
-    document.getElementById("text-6839").value
-  );
+  const principal = parseFloat(loanAmount);
+  const annualInterestRate = parseFloat(interestRate);
 
   if (
     !interestRateNumberPattern.test(annualInterestRate) ||
@@ -221,8 +245,7 @@ function toggleVisibility() {
     calculateMonthlyRepayment();
     calculatePotentialRepaymentAmount();
   }
-	window.scrollTo({ top: 0, behavior: 'smooth' });
-	
+  window.scrollTo({ top: 0, behavior: "smooth" });
 
   // // Show the hidden section
   // document.getElementById('sec-4977').style.display = 'block';
@@ -236,9 +259,9 @@ function toggleVisibility() {
 
 function calculateMonthlyRepayment() {
   // Get values from the input fields
-  const principal = parseFloat(document.getElementById("text-7847").value);
+  const principal = parseFloat(document.getElementById("loanAmount").value);
   const annualInterestRate = parseFloat(
-    document.getElementById("text-6839").value
+    document.getElementById("interestRate").value,
   );
   const loanTermYears = 30; // Fixed loan term of 30 years
 
@@ -266,14 +289,14 @@ function calculateMonthlyRepayment() {
 
   // Display the monthly repayment rounded to two decimal places
   document.getElementById("monthlyRepayment").textContent = `${formatCurrency(
-    monthlyRepayment.toFixed(2)
+    monthlyRepayment.toFixed(2),
   )} / month`;
   return monthlyRepayment;
 }
 
 function calculatePotentialRepaymentAmount() {
   // Get values from the input fields
-  const principal = parseFloat(document.getElementById("text-7847").value);
+  const principal = parseFloat(document.getElementById("loanAmount").value);
   const annualInterestRate = 4.89;
   const loanTermYears = 30; // Fixed loan term of 30 years
 
@@ -304,9 +327,8 @@ function calculatePotentialRepaymentAmount() {
   const yearlySavings = monthlySavings > 0 ? monthlySavings * 12 : 0;
 
   if (yearlySavings > 0) {
-    document.getElementById(
-      "savingsAmount"
-    ).textContent = `${formatCurrency(yearlySavings.toFixed(2))} / year`;
+    document.getElementById("savingsAmount").textContent =
+      `${formatCurrency(yearlySavings.toFixed(2))} / year`;
   } else {
     // If there are no savings
     document.getElementById("savingsAmount").textContent = `$0 / year`;
@@ -314,17 +336,11 @@ function calculatePotentialRepaymentAmount() {
   }
 
   // Set potential repayment to monthly repayment if it's higher
-  document.getElementById(
-    "monthlyPotentialRepayment"
-  ).textContent = `${formatCurrency(
-    potentialMonthlyRepayment.toFixed(2)
-  )} / month`;
+  document.getElementById("monthlyPotentialRepayment").textContent =
+    `${formatCurrency(potentialMonthlyRepayment.toFixed(2))} / month`;
   const totalSavings = yearlySavings + 5000;
-  document.getElementById(
-    "totalSavingsAmount"
-  ).textContent = `Total Potential Savings: upto ${formatCurrency(
-    totalSavings.toFixed(2)
-  )}*`;
+  document.getElementById("totalSavingsAmount").textContent =
+    `Total Potential Savings: upto ${formatCurrency(totalSavings.toFixed(2))}*`;
 }
 
 function formatCurrency(amount) {
@@ -332,177 +348,208 @@ function formatCurrency(amount) {
 }
 
 function formatPhoneNumber(phoneNumber) {
-	// Remove any non-digit characters
-	const cleanedNumber = phoneNumber.replace(/\D/g, '');
+  // Remove any non-digit characters
+  const cleanedNumber = phoneNumber.replace(/\D/g, "");
 
-	// Check if it starts with '0'
-	if (cleanedNumber.startsWith('0')) {
-			// Replace the leading '0' with '+61' (Australia's country code)
-			return `+61${cleanedNumber.slice(1)}`;
-	}
+  // Check if it starts with '0'
+  if (cleanedNumber.startsWith("0")) {
+    // Replace the leading '0' with '+61' (Australia's country code)
+    return `+61${cleanedNumber.slice(1)}`;
+  }
 
-	// If it already has a plus, return it as is
-	if (cleanedNumber.startsWith('61')) {
-			return `+${cleanedNumber}`;
-	}
+  // If it already has a plus, return it as is
+  if (cleanedNumber.startsWith("61")) {
+    return `+${cleanedNumber}`;
+  }
 
-	// Return as-is if it doesn't match known patterns
-	return cleanedNumber;
+  // Return as-is if it doesn't match known patterns
+  return cleanedNumber;
 }
 
-function submitLoanComparison(){
-	const viewResultButton = document.getElementById("viewResult");
-	viewResultButton.classList.remove("u-btn-submit");
-	viewResultButton.classList.remove("u-btn-step-next");
+function submitLoanComparison() {
 
-	const storedUserData = getLocalStorageWithExpiry("userData");
-	const loadingWrapper = document.getElementById("loadingWrapper");
-	const form = document.getElementById('LoanHealthCheck');
-	let name = document.getElementById('name-5a14').value;
-	let mobileNumber = document.getElementById('email-5a14').value;
-	const loanAmount = document.getElementById('text-7847').value;
-	const interestRate = document.getElementById('text-6839').value;
-	const propertyAddress = document.getElementById('text-8bd3').value;
+  const loanAmount = document.getElementById("loanAmount");
+  const interestRate = document.getElementById("interestRate");
 
-	loadingWrapper.style.display = "flex";
+  loanAmount.classList.remove("is-invalid");
+  interestRate.classList.remove("is-invalid");
 
-	
+  let isValid = true; // track overall form validity
 
+  // Validate Name
+  if (!loanAmount.value.trim()) {
+    loanAmount.classList.add("is-invalid");
+    isValid = false;
+  }
 
-	if(!storedUserData){
-		console.log("userdata not stored");
-		setLocalStorageWithExpiry("userData", name, mobileNumber, 3600000);
-	} else {
-		console.log("user data is stored" );
-		name = storedUserData.name;
-		mobileNumber = storedUserData.mobileNumber;
-	}
+   if (!interestRate.value.trim()) {
+    interestRate.classList.add("is-invalid");
+    isValid = false;
+  }
 
-	const data = {
-		operationName: 'LoanHealthCheck',
-		name: name,
-		mobileNumber: mobileNumber,
-		loanAmount: loanAmount,
-		interestRate: interestRate,
-		propertyAddress: propertyAddress
-	}
+  if (!isValid) return false;
 
+  const viewResultButton = document.getElementById("viewResult");
+  viewResultButton.classList.remove("u-btn-submit");
+  viewResultButton.classList.remove("u-btn-step-next");
 
-	fetch(
+  const storedUserData = getLocalStorageWithExpiry("userData");
+  const loadingWrapper = document.getElementById("loadingWrapper");
+  const form = document.getElementById("LoanHealthCheck");
+  let name = document.getElementById("username").value;
+  let mobileNumber = document.getElementById("mobileNumber").value;
+  const propertyAddress = document.getElementById("propAddress").value;
+
+  loadingWrapper.style.display = "flex";
+
+  if (!storedUserData) {
+    console.log("userdata not stored");
+    setLocalStorageWithExpiry("userData", name, mobileNumber, 3600000);
+  } else {
+    console.log("user data is stored");
+    name = storedUserData.name;
+    mobileNumber = storedUserData.mobileNumber;
+  }
+
+  const data = {
+    operationName: "LoanHealthCheck",
+    name: name,
+    mobileNumber: mobileNumber,
+    loanAmount: loanAmount.value,
+    interestRate: interestRate.value,
+    propertyAddress: propertyAddress,
+  };
+
+  fetch(
     "https://9v4qfkzq5g.execute-api.ap-southeast-2.amazonaws.com/dev/sendemail",
     {
-      method: "POST", 
+      method: "POST",
       headers: {
-        "Content-Type": "application/json", 
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
-    }
+    },
   )
     .then((response) => {
-			if (response.ok) {
-				// If status is 200-299, proceed
-				return response.json();
-			} else {
-				// If status is outside 200 range, throw an error
-				throw new Error(`HTTP status ${response.status}`);
-			}
-		}) 
+      if (response.ok) {
+        // If status is 200-299, proceed
+        return response.json();
+      } else {
+        // If status is outside 200 range, throw an error
+        throw new Error(`HTTP status ${response.status}`);
+      }
+    })
     .then((data) => {
-			loadingWrapper.style.display = "none";
-			toggleVisibility();
-			logApiSuccess("Send email - Loan Health Check");
-      console.log("Success:", data); 
+      loadingWrapper.style.display = "none";
+      toggleVisibility();
+      logApiSuccess("Send email - Loan Health Check");
+      console.log("Success:", data);
     })
     .catch((error) => {
-			loadingWrapper.style.display = "none";
-			logApiFailure("Send email - Loan Health Check");
-			toggleVisibility();
-      console.error("Error:", error); 
+      loadingWrapper.style.display = "none";
+      logApiFailure("Send email - Loan Health Check");
+      toggleVisibility();
+      console.error("Error:", error);
     });
-
 }
 
-function submitLoanComparisonCallBack(event){
-	const viewResultButton = document.getElementById("viewResult");
-	viewResultButton.classList.remove("u-btn-submit");
-	viewResultButton.classList.remove("u-btn-step-next");
-	const storedUserData = getLocalStorageWithExpiry("userData");
+  function attachDecimalAutoFormat(inputElement) {
+    inputElement.addEventListener('input', (e) => {
+      let value = e.target.value;
+
+      // Remove any non-digit and non-dot characters
+    value = value.replace(/[^\d.]/g, '');
+
+    // If there's no dot, append one after the first digit
+    if (!value.includes('.') && value.length > 0) {
+      value = value[0] + '.' + value.slice(1);
+    }
 
 
-	const loadingWrapper = document.getElementById("loadingWrapper");
-	const thankyou = document.getElementById("thankyou");
-	const form = document.getElementById('LoanHealthCheck');
-	let name = document.getElementById('name-5a14').value;
-	let mobileNumber = document.getElementById('email-5a14').value;
-	const loanAmount = document.getElementById('text-7847').value;
-	const interestRate = document.getElementById('text-6839').value;
-	const propertyAddress = document.getElementById('text-8bd3').value;
-	const potentialRepayment = document.getElementById('monthlyPotentialRepayment').textContent;
-	const currentRepayment = document.getElementById('monthlyRepayment').textContent;
-	const interestSavings = document.getElementById('savingsAmount').textContent;
+      e.target.value = value;
+    });
+  }
 
-	loadingWrapper.style.display = "flex";
-	thankyou.classList.toggle("u-form-send-message"); // Toggles the visibility class
+function submitLoanComparisonCallBack(event) {
+  const viewResultButton = document.getElementById("viewResult");
+  viewResultButton.classList.remove("u-btn-submit");
+  viewResultButton.classList.remove("u-btn-step-next");
+  const storedUserData = getLocalStorageWithExpiry("userData");
 
-	if(!storedUserData){
-		console.log("userdata not stored");
-		setLocalStorageWithExpiry("userData", name, mobileNumber, 3600000);
-	} else {
-		console.log("user data is stored" );
-		name = storedUserData.name;
-		mobileNumber = storedUserData.mobileNumber;
-	}
+  const loadingWrapper = document.getElementById("loadingWrapper");
+  const thankyou = document.getElementById("thankyou");
+  const form = document.getElementById("LoanHealthCheck");
+  let name = document.getElementById("username").value;
+  let mobileNumber = document.getElementById("mobileNumber").value;
+  const loanAmount = document.getElementById("loanAmount").value;
+  const interestRate = document.getElementById("interestRate").value;
+  const propertyAddress = document.getElementById("propAddress").value;
+  const potentialRepayment = document.getElementById(
+    "monthlyPotentialRepayment",
+  ).textContent;
+  const currentRepayment =
+    document.getElementById("monthlyRepayment").textContent;
+  const interestSavings = document.getElementById("savingsAmount").textContent;
 
+  loadingWrapper.style.display = "flex";
+  thankyou.classList.toggle("u-form-send-message"); // Toggles the visibility class
 
-	const data = {
-		operationName: 'LoanHealthCheckCallBack',
-		name: name,
-		mobileNumber: mobileNumber,
-		loanAmount: loanAmount,
-		interestRate: interestRate,
-		propertyAddress: propertyAddress,
-		currentRepayment: currentRepayment,
-		potentialRepayment: potentialRepayment,
-		interestSavings: interestSavings
-	}
+  if (!storedUserData) {
+    console.log("userdata not stored");
+    setLocalStorageWithExpiry("userData", name, mobileNumber, 3600000);
+  } else {
+    console.log("user data is stored");
+    name = storedUserData.name;
+    mobileNumber = storedUserData.mobileNumber;
+  }
 
+  const data = {
+    operationName: "LoanHealthCheckCallBack",
+    name: name,
+    mobileNumber: mobileNumber,
+    loanAmount: loanAmount,
+    interestRate: interestRate,
+    propertyAddress: propertyAddress,
+    currentRepayment: currentRepayment,
+    potentialRepayment: potentialRepayment,
+    interestSavings: interestSavings,
+  };
 
-	fetch(
+  fetch(
     "https://9v4qfkzq5g.execute-api.ap-southeast-2.amazonaws.com/dev/sendemail",
     {
-      method: "POST", 
+      method: "POST",
       headers: {
-        "Content-Type": "application/json", 
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
-    }
+    },
   )
     .then((response) => {
-			if (response.ok) {
-				// If status is 200-299, proceed
-				return response.json();
-			} else {
-				// If status is outside 200 range, throw an error
-				throw new Error(`HTTP status ${response.status}`);
-			}
-		}) 
+      if (response.ok) {
+        // If status is 200-299, proceed
+        return response.json();
+      } else {
+        // If status is outside 200 range, throw an error
+        throw new Error(`HTTP status ${response.status}`);
+      }
+    })
     .then((data) => {
-			thankyou.style.display = "block";
-			loadingWrapper.style.display = "none";
-      console.log("Success:", data); 
+      thankyou.style.display = "block";
+      loadingWrapper.style.display = "none";
+      console.log("Success:", data);
     })
     .catch((error) => {
-			thankyou.style.display = "block";
-			loadingWrapper.style.display = "none";
-      console.error("Error:", error); 
+      thankyou.style.display = "block";
+      loadingWrapper.style.display = "none";
+      console.error("Error:", error);
     });
-
 }
 
 function onSubmit(event) {
-console.log('onSubmit triggered')
+  console.log("onSubmit triggered");
 }
 
-function submitRefinanceRquestCallback(event){
-	alert("I ma submitRefinanceRquestCallback")
+function submitRefinanceRquestCallback(event) {
+  alert("I ma submitRefinanceRquestCallback");
 }
