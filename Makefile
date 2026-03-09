@@ -16,11 +16,9 @@ format:
 	@echo "Formatting complete."
 	
 build:
-	rm -rf $(OUTPUT_DIR)/*
 	@echo "Building the project..."
-	mkdir -p $(OUTPUT_DIR)          # Create the output directory if it doesn't exist
-	cp -r $(SOURCE_DIR)/* $(OUTPUT_DIR)  # Copy source files to the output directory
-	@echo "Build complete. Files copied to $(OUTPUT_DIR)."
+	npm run build
+	@echo "Build complete. Files written to $(OUTPUT_DIR)."
 
 
 dev_deploy: build
