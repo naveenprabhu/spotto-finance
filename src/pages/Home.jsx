@@ -218,7 +218,7 @@ export default function Home() {
                   <img
                     src="/images/naveen.jpeg"
                     alt="Naveen Arumugam — Mortgage Broker"
-                    className="w-full h-full object-cover object-top"
+                    className="w-full h-full object-cover object-center"
                   />
                   {/* Subtle gradient at bottom to soften background */}
                   <div className="absolute inset-0 bg-gradient-to-t from-navy-700/40 via-transparent to-transparent" />

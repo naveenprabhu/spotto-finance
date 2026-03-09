@@ -15,7 +15,7 @@ export default function Calculators() {
       description:
         'Enter your income, monthly expenses and number of dependants to get an estimate of how much you could borrow for a home loan.',
       cta: 'Check My Borrowing Power',
-      tags: ['Quick', 'No OTP required'],
+      tags: ['Quick', 'Phone verified'],
     },
     {
       to: '/calculators/loan-health-check',
