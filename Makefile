@@ -9,12 +9,16 @@ help::
 	@echo "make dev_deploy - Deploy the code for dev testing"
 	@echo "---"
 
+format:
+	@echo "Formatting code..."
+	# Example for JavaScript/TypeScript
+	prettier --write "$(SOURCE_DIR)/**/*.{js,ts,jsx,tsx,css,html}"
+	@echo "Formatting complete."
+	
 build:
-	rm -rf $(OUTPUT_DIR)/*
 	@echo "Building the project..."
-	mkdir -p $(OUTPUT_DIR)          # Create the output directory if it doesn't exist
-	cp -r $(SOURCE_DIR)/* $(OUTPUT_DIR)  # Copy source files to the output directory
-	@echo "Build complete. Files copied to $(OUTPUT_DIR)."
+	npm run build
+	@echo "Build complete. Files written to $(OUTPUT_DIR)."
 
 
 dev_deploy: build
@@ -22,5 +26,5 @@ dev_deploy: build
 	cp -r ./output/ /opt/homebrew/var/www
 
 prod_deploy: build
-	aws s3 sync ./output/ s3://spottofinance.com.au
-	aws cloudfront create-invalidation --distribution-id=E17ZYXG5PGP73T --paths "/*"
+	aws s3 sync ./output/ s3://spottofinance.com.au --profile qtechit
+	aws cloudfront create-invalidation --distribution-id=E17ZYXG5PGP73T --paths "/*" --profile qtechit
