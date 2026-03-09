@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { logScreenView, logButtonClick } from '../lib/firebase'
+import {
+  AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
+} from 'recharts'
 
 const BOOKING_URL = 'https://outlook.office.com/book/DiscoveryCallBooking@spottofinance.com.au/?ismsaljsauthenabled'
 
@@ -119,7 +122,35 @@ function StepDetails({ onResult }) {
   )
 }
 
+function buildOffsetChartData(loan, annualRate, termYears, offsetBalance, stdPayment) {
+  const r = annualRate / 100 / 12
+  const n = termYears * 12
+  const step = Math.max(1, Math.floor(n / 20))
+  const data = []
+  let stdBal = loan, offsetBal = loan
+  let stdInterest = 0, offsetInterest = 0
+
+  for (let mo = 0; mo <= n; mo += step) {
+    if (mo > 0) {
+      for (let i = 0; i < step; i++) {
+        if (stdBal > 0) {
+          const int = stdBal * r; stdInterest += int
+          stdBal = Math.max(0, stdBal - (stdPayment - int))
+        }
+        if (offsetBal > 0) {
+          const int = Math.max(0, offsetBal - offsetBalance) * r; offsetInterest += int
+          offsetBal = Math.max(0, offsetBal - (stdPayment - int))
+        }
+      }
+    }
+    data.push({ year: (mo / 12).toFixed(0), 'No Offset': Math.round(stdInterest), 'With Offset': Math.round(offsetInterest) })
+    if (stdBal === 0 && offsetBal === 0) break
+  }
+  return data
+}
+
 function StepResult({ result }) {
+  const chartData = buildOffsetChartData(result.loan, result.rate, result.term, result.offset, result.stdPayment)
   const offsetPct = ((result.offset / result.loan) * 100).toFixed(1)
   return (
     <div className="space-y-5">
@@ -155,6 +186,32 @@ function StepResult({ result }) {
           <span className="font-medium">Total interest (with offset)</span>
           <span className="font-semibold">{formatCurrency(result.offsetTotalInterest)}</span>
         </div>
+      </div>
+
+      {/* Chart */}
+      <div className="bg-white rounded-2xl border border-gray-100 p-4">
+        <p className="text-sm font-semibold text-navy-700 mb-3">Cumulative Interest Paid Over Time</p>
+        <ResponsiveContainer width="100%" height={200}>
+          <AreaChart data={chartData} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
+            <defs>
+              <linearGradient id="noOffset" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="#94a3b8" stopOpacity={0.3} />
+                <stop offset="95%" stopColor="#94a3b8" stopOpacity={0.05} />
+              </linearGradient>
+              <linearGradient id="withOffset" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="#22c55e" stopOpacity={0.3} />
+                <stop offset="95%" stopColor="#22c55e" stopOpacity={0.05} />
+              </linearGradient>
+            </defs>
+            <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+            <XAxis dataKey="year" tick={{ fontSize: 11 }} label={{ value: 'Years', position: 'insideBottom', offset: -2, fontSize: 11 }} height={30} />
+            <YAxis tick={{ fontSize: 11 }} tickFormatter={(v) => `$${(v / 1000).toFixed(0)}k`} width={52} />
+            <Tooltip formatter={(v) => [`$${Number(v).toLocaleString('en-AU')}`, undefined]} labelFormatter={(l) => `Year ${l}`} />
+            <Legend wrapperStyle={{ fontSize: 12 }} />
+            <Area type="monotone" dataKey="No Offset" stroke="#94a3b8" fill="url(#noOffset)" strokeWidth={2} dot={false} />
+            <Area type="monotone" dataKey="With Offset" stroke="#22c55e" fill="url(#withOffset)" strokeWidth={2} dot={false} />
+          </AreaChart>
+        </ResponsiveContainer>
       </div>
 
       <p className="text-xs text-gray-400 text-center">

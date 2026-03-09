@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { logScreenView, logButtonClick } from '../lib/firebase'
+import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts'
 
 const BOOKING_URL = 'https://outlook.office.com/book/DiscoveryCallBooking@spottofinance.com.au/?ismsaljsauthenabled'
 
@@ -201,6 +202,29 @@ function StepResult({ result }) {
           <span className="font-bold text-navy-700">{formatCurrency(totalUpfront)}</span>
         </div>
       </div>
+
+      {/* Chart — only meaningful if duty > 0 */}
+      {result.duty > 0 && (
+        <div className="bg-white rounded-2xl border border-gray-100 p-4">
+          <p className="text-sm font-semibold text-navy-700 mb-1 text-center">Cost Breakdown</p>
+          <ResponsiveContainer width="100%" height={180}>
+            <PieChart>
+              <Pie
+                data={[
+                  { name: 'Property Price', value: result.price },
+                  { name: 'Stamp Duty', value: result.duty },
+                ]}
+                cx="50%" cy="50%" innerRadius={45} outerRadius={65} dataKey="value" paddingAngle={3}
+              >
+                <Cell fill="#1e3a5f" />
+                <Cell fill="#22c55e" />
+              </Pie>
+              <Tooltip formatter={(v) => [`$${Number(v).toLocaleString('en-AU')}`, undefined]} />
+              <Legend wrapperStyle={{ fontSize: 12 }} />
+            </PieChart>
+          </ResponsiveContainer>
+        </div>
+      )}
 
       <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 text-xs text-amber-800">
         <strong>Note:</strong> Figures are indicative estimates. Concessions, surcharges, and thresholds change regularly. Consult a conveyancer for exact amounts.

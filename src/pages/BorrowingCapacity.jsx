@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { sendOtp, verifyOtp, sendEmail } from '../lib/api'
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts'
 import { getUserData, saveUserData, formatPhone } from '../lib/storage'
 import {
   logScreenView,
@@ -332,6 +333,32 @@ function StepResult({ user, result }) {
         <p className="text-gray-400 text-xs">
           ${Number(result.income).toLocaleString()} income · ${Number(result.expense).toLocaleString()}/mo expenses
         </p>
+      </div>
+
+      {/* Chart */}
+      <div className="bg-white rounded-2xl border border-gray-100 p-4">
+        <p className="text-sm font-semibold text-navy-700 mb-3">Your Financial Snapshot</p>
+        <ResponsiveContainer width="100%" height={160}>
+          <BarChart
+            layout="vertical"
+            data={[
+              { name: 'Annual Income', value: Number(result.income) },
+              { name: 'Annual Expenses', value: Number(result.expense) * 12 },
+              { name: 'Borrowing Capacity', value: Math.round(result.capacity) },
+            ]}
+            margin={{ top: 4, right: 16, left: 8, bottom: 4 }}
+          >
+            <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" horizontal={false} />
+            <XAxis type="number" tick={{ fontSize: 10 }} tickFormatter={(v) => `$${(v / 1000).toFixed(0)}k`} />
+            <YAxis type="category" dataKey="name" tick={{ fontSize: 10 }} width={90} />
+            <Tooltip formatter={(v) => [`$${Number(v).toLocaleString('en-AU')}`, undefined]} />
+            <Bar dataKey="value" radius={[0, 4, 4, 0]}>
+              <Cell fill="#22c55e" />
+              <Cell fill="#f97316" />
+              <Cell fill="#1e3a5f" />
+            </Bar>
+          </BarChart>
+        </ResponsiveContainer>
       </div>
 
       <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 text-xs text-amber-800">

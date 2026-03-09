@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { logScreenView, logButtonClick } from '../lib/firebase'
+import {
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell,
+} from 'recharts'
 
 const BOOKING_URL = 'https://outlook.office.com/book/DiscoveryCallBooking@spottofinance.com.au/?ismsaljsauthenabled'
 
@@ -157,6 +160,47 @@ function StepResult({ result }) {
         <div className="flex justify-between border-t border-gray-100 pt-2 text-brand-green">
           <span className="font-medium">Your split</span>
           <span className="font-bold">{formatCurrency(result.totalMonthly)}/mo</span>
+        </div>
+      </div>
+
+      {/* Charts */}
+      <div className="grid grid-cols-2 gap-3">
+        {/* Donut — loan split */}
+        <div className="bg-white rounded-2xl border border-gray-100 p-3">
+          <p className="text-xs font-semibold text-navy-700 mb-1 text-center">Loan Split</p>
+          <ResponsiveContainer width="100%" height={140}>
+            <PieChart>
+              <Pie data={[{ name: `Fixed ${result.fixedPct}%`, value: result.fixedAmount }, { name: `Variable ${100 - result.fixedPct}%`, value: result.varAmount }]}
+                cx="50%" cy="50%" innerRadius={35} outerRadius={55} dataKey="value" paddingAngle={2}>
+                <Cell fill="#3b82f6" />
+                <Cell fill="#22c55e" />
+              </Pie>
+              <Tooltip formatter={(v) => [`$${Number(v).toLocaleString('en-AU')}`, undefined]} />
+              <Legend wrapperStyle={{ fontSize: 10 }} />
+            </PieChart>
+          </ResponsiveContainer>
+        </div>
+
+        {/* Bar — monthly repayment comparison */}
+        <div className="bg-white rounded-2xl border border-gray-100 p-3">
+          <p className="text-xs font-semibold text-navy-700 mb-1 text-center">Monthly Repayment</p>
+          <ResponsiveContainer width="100%" height={140}>
+            <BarChart data={[
+              { name: 'Fixed', value: Math.round(result.fullFixedMonthly) },
+              { name: 'Split', value: Math.round(result.totalMonthly) },
+              { name: 'Variable', value: Math.round(result.fullVarMonthly) },
+            ]} margin={{ top: 4, right: 4, left: 0, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+              <XAxis dataKey="name" tick={{ fontSize: 10 }} />
+              <YAxis tick={{ fontSize: 10 }} tickFormatter={(v) => `$${(v / 1000).toFixed(1)}k`} width={44} />
+              <Tooltip formatter={(v) => [`$${Number(v).toLocaleString('en-AU')}/mo`, undefined]} />
+              <Bar dataKey="value" radius={[4, 4, 0, 0]}>
+                <Cell fill="#3b82f6" />
+                <Cell fill="#22c55e" />
+                <Cell fill="#94a3b8" />
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
         </div>
       </div>
 

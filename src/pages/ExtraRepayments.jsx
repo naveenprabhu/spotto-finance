@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { logScreenView, logButtonClick } from '../lib/firebase'
+import {
+  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
+} from 'recharts'
 
 const BOOKING_URL = 'https://outlook.office.com/book/DiscoveryCallBooking@spottofinance.com.au/?ismsaljsauthenabled'
 
@@ -123,8 +126,36 @@ function StepDetails({ onResult }) {
   )
 }
 
+// ─── Chart data ───────────────────────────────────────────────────────────────
+function buildBalanceData(balance, annualRate, termYears, extra, stdMonthly) {
+  const r = annualRate / 100 / 12
+  const data = []
+  let stdBal = balance
+  let extraBal = balance
+  const extraPmt = stdMonthly + extra
+  const step = Math.max(1, Math.floor(termYears / 20)) // max ~20 data points
+
+  for (let mo = 0; mo <= termYears * 12; mo += step) {
+    if (mo > 0) {
+      for (let i = 0; i < step; i++) {
+        if (stdBal > 0) stdBal = Math.max(0, stdBal - (stdMonthly - stdBal * r))
+        if (extraBal > 0) extraBal = Math.max(0, extraBal - (extraPmt - extraBal * r))
+      }
+    }
+    data.push({
+      year: (mo / 12).toFixed(1),
+      Standard: Math.round(stdBal),
+      'With Extra': Math.round(extraBal),
+    })
+    if (extraBal === 0 && stdBal === 0) break
+  }
+  return data
+}
+
 // ─── Step 2: Result ───────────────────────────────────────────────────────────
 function StepResult({ result }) {
+  const chartData = buildBalanceData(result.balance, result.rate, result.term, result.extra, result.stdMonthly)
+
   return (
     <div className="space-y-5">
       <div className="bg-gradient-to-br from-navy-700 to-navy-800 rounded-2xl p-6 text-center text-white">
@@ -163,6 +194,22 @@ function StepResult({ result }) {
           <span className="text-gray-500">New term</span>
           <span className="font-semibold text-brand-green">{fmtMonths(result.newMonths)}</span>
         </div>
+      </div>
+
+      {/* Chart */}
+      <div className="bg-white rounded-2xl border border-gray-100 p-4">
+        <p className="text-sm font-semibold text-navy-700 mb-3">Loan Balance Over Time</p>
+        <ResponsiveContainer width="100%" height={200}>
+          <LineChart data={chartData} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+            <XAxis dataKey="year" tick={{ fontSize: 11 }} label={{ value: 'Years', position: 'insideBottom', offset: -2, fontSize: 11 }} height={30} />
+            <YAxis tick={{ fontSize: 11 }} tickFormatter={(v) => `$${(v / 1000).toFixed(0)}k`} width={52} />
+            <Tooltip formatter={(v) => [`$${Number(v).toLocaleString('en-AU')}`, undefined]} labelFormatter={(l) => `Year ${l}`} />
+            <Legend wrapperStyle={{ fontSize: 12 }} />
+            <Line type="monotone" dataKey="Standard" stroke="#94a3b8" strokeWidth={2} dot={false} />
+            <Line type="monotone" dataKey="With Extra" stroke="#22c55e" strokeWidth={2} dot={false} />
+          </LineChart>
+        </ResponsiveContainer>
       </div>
 
       <p className="text-xs text-gray-400 text-center">
