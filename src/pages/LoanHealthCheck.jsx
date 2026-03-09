@@ -58,18 +58,20 @@ function AddressAutocomplete({ value, onChange }) {
     debounceRef.current = setTimeout(async () => {
       setLoading(true)
       try {
+        // Photon (OpenStreetMap) — supports partial/typeahead matching
+        // bbox restricts results to Australia: W,S,E,N
         const url =
-          `https://nominatim.openstreetmap.org/search` +
-          `?format=json&countrycodes=au&addressdetails=1&limit=6` +
-          `&q=${encodeURIComponent(q)}`
-        const res = await fetch(url, {
-          headers: { 'Accept-Language': 'en-AU' },
-        })
+          `https://photon.komoot.io/api/` +
+          `?q=${encodeURIComponent(q)}&limit=5&lang=en` +
+          `&bbox=113.338953,-43.634597,153.569469,-10.668186`
+        const res = await fetch(url)
         const data = await res.json()
-        // Show any AU result — let Nominatim do the matching
-        const filtered = data
-          .slice(0, 5)
-          .map((r) => r.display_name)
+        const filtered = (data.features || []).map((f) => {
+          const p = f.properties
+          return [p.housenumber, p.street, p.city || p.suburb || p.district, p.state, p.postcode]
+            .filter(Boolean)
+            .join(', ')
+        }).filter(Boolean)
         setSuggestions(filtered)
         setOpen(filtered.length > 0)
       } catch {
@@ -113,7 +115,7 @@ function AddressAutocomplete({ value, onChange }) {
               📍 {s}
             </li>
           ))}
-          <li className="px-4 py-1.5 text-gray-300 text-xs">© OpenStreetMap contributors</li>
+          <li className="px-4 py-1.5 text-gray-300 text-xs">© OpenStreetMap contributors · Photon</li>
         </ul>
       )}
     </div>
