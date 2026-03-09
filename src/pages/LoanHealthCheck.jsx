@@ -491,7 +491,7 @@ function StepResult({ user, result }) {
           <div className="text-3xl mb-2">🎉</div>
           <p className="font-bold text-navy-700">Callback requested!</p>
           <p className="text-gray-500 text-sm mt-1">
-            Naveen will call {user.mobileNumber} shortly.
+            Your broker will call {user.mobileNumber} shortly.
           </p>
         </div>
       ) : (
