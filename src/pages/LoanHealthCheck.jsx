@@ -10,17 +10,119 @@ import {
   logUserAction,
 } from '../lib/firebase'
 
-// ─── Helpers ─────────────────────────────────────────────────────────────────
+// ─── Constants ────────────────────────────────────────────────────────────────
+// Benchmark = competitive variable rate currently available through Spotto Finance
+// (based on current lender pricing; updated periodically)
 const BENCHMARK_RATE = 4.89
 
+// ─── Helpers ─────────────────────────────────────────────────────────────────
 function formatCurrency(amount) {
   return `$${Number(amount.toFixed(0)).toLocaleString('en-AU')}`
 }
 
-function calcMonthly(principal, annualRate) {
-  const r = annualRate / 100 / 12
-  const n = 30 * 12
+/**
+ * Standard mortgage amortisation formula.
+ * Returns monthly repayment for a given principal, annual rate, and term (years).
+ * PMT = P × [r(1+r)^n] / [(1+r)^n − 1]
+ */
+function calcMonthly(principal, annualRate, termYears = 30) {
+  const r = annualRate / 100 / 12      // monthly rate
+  const n = termYears * 12             // total payments
   return (principal * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1)
+}
+
+// ─── Address autocomplete (OpenStreetMap Nominatim — AU only) ─────────────────
+function AddressAutocomplete({ value, onChange }) {
+  const [suggestions, setSuggestions] = useState([])
+  const [open, setOpen] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const debounceRef = useRef(null)
+  const wrapperRef = useRef(null)
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handler = (e) => {
+      if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
+        setOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [])
+
+  const handleChange = (e) => {
+    const q = e.target.value
+    onChange(q)
+    clearTimeout(debounceRef.current)
+    if (q.length < 4) { setSuggestions([]); setOpen(false); return }
+    debounceRef.current = setTimeout(async () => {
+      setLoading(true)
+      try {
+        const url =
+          `https://nominatim.openstreetmap.org/search` +
+          `?format=json&countrycodes=au&addressdetails=1&limit=6` +
+          `&q=${encodeURIComponent(q)}`
+        const res = await fetch(url, {
+          headers: { 'Accept-Language': 'en-AU' },
+        })
+        const data = await res.json()
+        // Filter to address-like results (house, building, road, suburb)
+        const filtered = data
+          .filter((r) =>
+            ['house', 'building', 'residential', 'road', 'suburb', 'neighbourhood', 'quarter'].includes(r.type) ||
+            r.class === 'place' ||
+            r.address?.house_number
+          )
+          .slice(0, 5)
+          .map((r) => r.display_name)
+        setSuggestions(filtered)
+        setOpen(filtered.length > 0)
+      } catch {
+        // silently fail — address is optional
+      }
+      setLoading(false)
+    }, 400)
+  }
+
+  const select = (addr) => {
+    onChange(addr)
+    setOpen(false)
+    setSuggestions([])
+  }
+
+  return (
+    <div ref={wrapperRef} className="relative">
+      <div className="relative">
+        <input
+          className="form-input pr-8"
+          placeholder="Start typing an address…"
+          value={value}
+          onChange={handleChange}
+          onFocus={() => suggestions.length > 0 && setOpen(true)}
+          autoComplete="off"
+        />
+        {loading && (
+          <span className="absolute right-3 top-1/2 -translate-y-1/2">
+            <span className="spinner" />
+          </span>
+        )}
+      </div>
+      {open && suggestions.length > 0 && (
+        <ul className="absolute z-50 mt-1 w-full bg-white border border-gray-200 rounded-xl shadow-lg max-h-52 overflow-y-auto text-sm">
+          {suggestions.map((s, i) => (
+            <li
+              key={i}
+              className="px-4 py-2.5 hover:bg-brand-green-light cursor-pointer text-gray-700 border-b border-gray-50 last:border-0 leading-snug"
+              onMouseDown={(e) => { e.preventDefault(); select(s) }}
+            >
+              📍 {s}
+            </li>
+          ))}
+          <li className="px-4 py-1.5 text-gray-300 text-xs">© OpenStreetMap contributors</li>
+        </ul>
+      )}
+    </div>
+  )
 }
 
 // ─── Step indicator ───────────────────────────────────────────────────────────
@@ -192,28 +294,34 @@ function StepLoanDetails({ user, onResult }) {
     logButtonClick('Loan Health Check - Calculate')
     setLoading(true)
 
-    const currentMonthly = calcMonthly(principal, rate)
+    // ── Savings calculation ────────────────────────────────────────────────
+    // Monthly repayment = PMT(r/12, 30×12, principal)
+    // where r is the annual rate as a decimal.
+    // Annual savings = (current monthly − benchmark monthly) × 12
+    // 5-year indicative savings = annual savings × 5
+    const currentMonthly   = calcMonthly(principal, rate)
     const benchmarkMonthly = calcMonthly(principal, BENCHMARK_RATE)
-    const monthlySavings = currentMonthly - benchmarkMonthly
-    const yearlySavings = monthlySavings > 0 ? monthlySavings * 12 : 0
-    const totalSavings = yearlySavings + 5000
+    const monthlySavings   = currentMonthly - benchmarkMonthly
+    const annualSavings    = monthlySavings > 0 ? monthlySavings * 12 : 0
+    const fiveYearSavings  = annualSavings * 5
 
     const resultData = {
-      loanAmount: principal,
-      interestRate: rate,
+      loanAmount:      principal,
+      interestRate:    rate,
       propertyAddress,
       currentMonthly,
       benchmarkMonthly: monthlySavings > 0 ? benchmarkMonthly : currentMonthly,
-      yearlySavings,
-      totalSavings,
-      hasSavings: yearlySavings > 0,
+      monthlySavings:   monthlySavings > 0 ? monthlySavings : 0,
+      annualSavings,
+      fiveYearSavings,
+      hasSavings: annualSavings > 0,
     }
 
     try {
       await sendEmail({
         operationName: 'LoanHealthCheck',
-        name: user.name,
-        mobileNumber: user.mobileNumber,
+        name:            user.name,
+        mobileNumber:    user.mobileNumber,
         loanAmount,
         interestRate,
         propertyAddress,
@@ -261,12 +369,8 @@ function StepLoanDetails({ user, onResult }) {
       </div>
       <div>
         <label className="form-label">Property Address (optional)</label>
-        <input
-          className="form-input"
-          placeholder="e.g. 123 Main St, Melbourne"
-          value={propertyAddress}
-          onChange={(e) => setPropertyAddress(e.target.value)}
-        />
+        <AddressAutocomplete value={propertyAddress} onChange={setPropertyAddress} />
+        <p className="text-gray-400 text-xs mt-1">Helps Naveen research local lender options for your area.</p>
       </div>
       {error && <p className="text-red-500 text-sm">{error}</p>}
       <button className="btn-primary w-full" onClick={handleCalculate} disabled={loading}>
@@ -286,15 +390,17 @@ function StepResult({ user, result }) {
     setLoading(true)
     try {
       await sendEmail({
-        operationName: 'LoanHealthCheckCallBack',
-        name: user.name,
-        mobileNumber: user.mobileNumber,
-        loanAmount: result.loanAmount,
-        interestRate: result.interestRate,
-        propertyAddress: result.propertyAddress || '',
-        currentRepayment: `${formatCurrency(result.currentMonthly)} / month`,
+        operationName:      'LoanHealthCheckCallBack',
+        name:               user.name,
+        mobileNumber:       user.mobileNumber,
+        loanAmount:         result.loanAmount,
+        interestRate:       result.interestRate,
+        propertyAddress:    result.propertyAddress || '',
+        currentRepayment:   `${formatCurrency(result.currentMonthly)} / month`,
         potentialRepayment: `${formatCurrency(result.benchmarkMonthly)} / month`,
-        interestSavings: `${formatCurrency(result.yearlySavings)} / year`,
+        monthlySavings:     `${formatCurrency(result.monthlySavings)} / month`,
+        annualSavings:      `${formatCurrency(result.annualSavings)} / year`,
+        fiveYearSavings:    `${formatCurrency(result.fiveYearSavings)} over 5 years`,
       })
       logApiSuccess('Send email - Loan Health Check Callback')
     } catch {
@@ -320,12 +426,12 @@ function StepResult({ user, result }) {
         </p>
         <p className="text-sm opacity-90 mt-1">
           {result.hasSavings
-            ? `You may be paying more than the ${BENCHMARK_RATE}% benchmark rate.`
-            : `Your rate is at or below our ${BENCHMARK_RATE}% benchmark.`}
+            ? `You may be paying above our ${BENCHMARK_RATE}% benchmark rate.`
+            : `Your rate is at or below the ${BENCHMARK_RATE}% benchmark — well done!`}
         </p>
       </div>
 
-      {/* Comparison table */}
+      {/* Repayment comparison */}
       <div className="border border-gray-100 rounded-2xl overflow-hidden">
         <div className="bg-gray-50 px-4 py-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">
           Monthly Repayment Comparison
@@ -352,21 +458,46 @@ function StepResult({ user, result }) {
         </div>
       </div>
 
-      {/* Savings highlight */}
+      {/* Savings breakdown — only shown when there are savings */}
       {result.hasSavings && (
-        <div className="bg-navy-700 text-white rounded-2xl p-5 text-center">
-          <p className="text-gray-300 text-sm">Potential annual savings</p>
-          <p className="text-3xl font-extrabold text-brand-green my-1">
-            {formatCurrency(result.yearlySavings)}/yr
-          </p>
-          <p className="text-xs text-gray-400">
-            Total potential savings: up to {formatCurrency(result.totalSavings)}*
+        <div className="bg-navy-700 text-white rounded-2xl p-5 space-y-3">
+          <p className="text-gray-300 text-xs font-semibold uppercase tracking-wider">Potential Savings</p>
+          <div className="grid grid-cols-3 gap-3 text-center">
+            <div>
+              <p className="text-brand-green font-extrabold text-lg">
+                {formatCurrency(result.monthlySavings)}
+              </p>
+              <p className="text-gray-400 text-xs mt-0.5">per month</p>
+            </div>
+            <div className="border-x border-white/10">
+              <p className="text-brand-green font-extrabold text-lg">
+                {formatCurrency(result.annualSavings)}
+              </p>
+              <p className="text-gray-400 text-xs mt-0.5">per year</p>
+            </div>
+            <div>
+              <p className="text-brand-green font-extrabold text-lg">
+                {formatCurrency(result.fiveYearSavings)}
+              </p>
+              <p className="text-gray-400 text-xs mt-0.5">over 5 yrs</p>
+            </div>
+          </div>
+          <p className="text-xs text-gray-400 text-center pt-1">
+            Monthly savings = PMT({result.interestRate}%) − PMT({BENCHMARK_RATE}%) · Annual = ×12 · 5-yr = ×60
           </p>
         </div>
       )}
 
-      <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 text-xs text-amber-800">
-        *Estimates based on a 30-year loan term and market rate comparison. Actual savings depend on lender criteria and individual circumstances.
+      {/* Methodology note */}
+      <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 text-xs text-amber-800 space-y-1">
+        <p>
+          <strong>Benchmark rate ({BENCHMARK_RATE}% p.a.)</strong> — a competitive variable rate currently
+          available to eligible borrowers through Spotto Finance&apos;s lender panel.
+        </p>
+        <p>
+          Calculations assume a 30-year principal-and-interest loan using the standard amortisation
+          formula. Actual savings depend on your lender, loan term, and individual credit assessment.
+        </p>
       </div>
 
       {/* CTA */}
