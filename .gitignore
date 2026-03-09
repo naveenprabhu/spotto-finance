@@ -4,3 +4,7 @@ output/
 dist/
 .DS_Store
 *.local
+
+# Environment variables
+.env
+.env.local

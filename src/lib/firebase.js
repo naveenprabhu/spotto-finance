@@ -2,13 +2,13 @@ import { initializeApp } from 'firebase/app'
 import { getAnalytics, logEvent } from 'firebase/analytics'
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBmDhYZawBfB-Rwoj4up2JFPxpBepY69mQ",
-  authDomain: "spotto-finance.firebaseapp.com",
-  projectId: "spotto-finance",
-  storageBucket: "spotto-finance.firebasestorage.app",
-  messagingSenderId: "4512021352",
-  appId: "1:4512021352:web:6497bff497ef537dd3b4dd",
-  measurementId: "G-X5TNX7N05Q",
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
 }
 
 const app = initializeApp(firebaseConfig)
