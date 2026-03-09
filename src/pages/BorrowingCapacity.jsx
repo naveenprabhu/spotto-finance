@@ -336,7 +336,7 @@ function StepResult({ user, result }) {
 
       <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 text-xs text-amber-800">
         <strong>Disclaimer:</strong> This is an estimate only. Actual borrowing capacity depends on
-        lender criteria, credit history, and other factors. Speak to Naveen for an accurate assessment.
+        lender criteria, credit history, and other factors. Speak to a broker for an accurate assessment.
       </div>
 
       {callbackSent ? (
@@ -344,13 +344,13 @@ function StepResult({ user, result }) {
           <div className="text-4xl mb-2">🎉</div>
           <p className="font-bold text-navy-700">Callback requested!</p>
           <p className="text-gray-500 text-sm mt-1">
-            Naveen will call <strong>{user.mobileNumber}</strong> shortly.
+            Your broker will call <strong>{user.mobileNumber}</strong> shortly.
           </p>
         </div>
       ) : (
         <div className="space-y-3">
           <p className="text-center text-gray-600 text-sm font-medium">
-            Want a personalised assessment from Naveen?
+            Want a personalised assessment from a broker?
           </p>
           <button className="btn-primary w-full" onClick={handleCallback} disabled={loading}>
             {loading ? 'Sending…' : '📞 Request a Free Callback'}

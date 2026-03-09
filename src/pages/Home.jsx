@@ -72,7 +72,7 @@ function ContactForm() {
       <div className="text-center py-10">
         <div className="w-16 h-16 bg-brand-green-light rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">✅</div>
         <h3 className="text-xl font-bold text-navy-700 mb-2">Message Received!</h3>
-        <p className="text-gray-500">Naveen will personally get back to you shortly.</p>
+        <p className="text-gray-500">Your broker will personally get back to you shortly.</p>
       </div>
     )
   }
@@ -289,9 +289,9 @@ export default function Home() {
               { icon: '🎯', title: 'Access to 30+ Lenders', color: 'border-blue-400',
                 desc: "We compare hundreds of products across Australia's top banks, credit unions, and non-bank lenders to find your best rate." },
               { icon: '🤝', title: 'Personalised Service', color: 'border-brand-green',
-                desc: "You deal directly with Naveen — not a call centre. He takes the time to understand your full financial picture." },
+                desc: "You deal directly with your broker — not a call centre. We take the time to understand your full financial picture." },
               { icon: '📊', title: 'Accounting Expertise', color: 'border-purple-400',
-                desc: "With an accounting background and working knowledge of AU tax, Naveen gives you broader financial perspective beyond just the mortgage." },
+                desc: "With an accounting background and working knowledge of AU tax, your broker gives you broader financial perspective beyond just the mortgage." },
             ].map((w) => (
               <div key={w.title} className={`glass rounded-2xl p-6 text-center border-t-4 ${w.color} hover:-translate-y-1 transition-transform duration-300`}>
                 <div className="w-14 h-14 bg-white/10 rounded-2xl flex items-center justify-center mx-auto mb-4 text-2xl">{w.icon}</div>
@@ -318,7 +318,7 @@ export default function Home() {
 
             {[
               { step: '01', icon: '📞', title: 'Free Consultation', color: 'bg-blue-500',
-                desc: 'Chat with Naveen about your goals. No obligation — just honest advice tailored to your situation.' },
+                desc: 'Chat with your broker about your goals. No obligation — just honest advice tailored to your situation.' },
               { step: '02', icon: '🔍', title: 'We Compare 30+ Lenders', color: 'bg-brand-green',
                 desc: 'We search the market to find the loan with the best rate and features for your needs.' },
               { step: '03', icon: '🏡', title: 'Settlement', color: 'bg-purple-500',
@@ -406,7 +406,7 @@ export default function Home() {
               <div className="section-badge">Get in Touch</div>
               <h2 className="section-heading">Let's Talk About Your Home Loan</h2>
               <p className="text-gray-500 mb-8 leading-relaxed">
-                Whether you're ready to apply or just have questions, Naveen will personally
+                Whether you're ready to apply or just have questions, your broker will personally
                 get back to you — usually within a few hours.
               </p>
               <ul className="space-y-5">

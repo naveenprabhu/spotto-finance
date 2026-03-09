@@ -83,7 +83,7 @@ export default function Calculators() {
           </h3>
           <p className="text-gray-500 text-sm mb-5">
             These calculators give you a ballpark figure. For an accurate picture
-            tailored to your full financial situation, speak to Naveen directly.
+            tailored to your full financial situation, speak to our broker directly.
           </p>
           <a
             href="tel:+61494168357"
