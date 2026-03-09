@@ -210,31 +210,32 @@ export default function Home() {
 
             {/* Photo */}
             <div className="flex items-center justify-center order-last lg:order-first">
-              <div className="relative">
-                {/* Decorative ring */}
-                <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-brand-green to-navy-700 scale-105 opacity-20 blur-sm" />
-                {/* Photo frame */}
-                <div className="relative w-64 h-72 sm:w-72 sm:h-80 rounded-3xl overflow-hidden shadow-2xl border-4 border-white">
-                  <img
-                    src="/images/naveen.jpeg"
-                    alt="Naveen Arumugam — Mortgage Broker"
-                    className="w-full h-full object-cover object-center"
-                  />
-                  {/* Subtle gradient at bottom to soften background */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-navy-700/40 via-transparent to-transparent" />
-                  {/* Name label */}
-                  <div className="absolute bottom-0 left-0 right-0 px-4 py-3">
-                    <p className="text-white font-bold text-sm drop-shadow-lg">Naveen Arumugam</p>
-                    <p className="text-white/80 text-xs drop-shadow-lg">Mortgage Broker · Dandenong, VIC</p>
+              <div>
+                {/* Photo + badges in their own relative wrapper */}
+                <div className="relative">
+                  {/* Decorative ring */}
+                  <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-brand-green to-navy-700 scale-105 opacity-20 blur-sm" />
+                  {/* Photo frame — aspect-[3/4] crops to chest height */}
+                  <div className="w-56 sm:w-64 aspect-[3/4] rounded-3xl overflow-hidden shadow-2xl border-4 border-white">
+                    <img
+                      src="/images/naveen.jpeg"
+                      alt="Naveen Arumugam — Mortgage Broker"
+                      className="w-full h-full object-cover object-top"
+                    />
+                  </div>
+                  {/* Floating badges — relative to photo frame, not name */}
+                  <div className="absolute -top-3 -right-3 bg-brand-green text-white rounded-xl shadow-lg px-3 py-1.5 text-xs font-bold">
+                    30+ Lenders
+                  </div>
+                  <div className="absolute -bottom-3 -left-3 bg-white rounded-xl shadow-lg px-3 py-1.5 flex items-center gap-1.5">
+                    <Stars size="sm" />
+                    <span className="text-sm font-bold text-navy-700">5.0</span>
                   </div>
                 </div>
-                {/* Floating badges */}
-                <div className="absolute -top-3 -right-3 bg-brand-green text-white rounded-xl shadow-lg px-3 py-1.5 text-xs font-bold">
-                  30+ Lenders
-                </div>
-                <div className="absolute -bottom-3 -left-3 bg-white rounded-xl shadow-lg px-3 py-1.5 flex items-center gap-1.5">
-                  <Stars size="sm" />
-                  <span className="text-sm font-bold text-navy-700">5.0</span>
+                {/* Name label — outside relative wrapper so badges don't overlap */}
+                <div className="text-center mt-6">
+                  <p className="font-bold text-navy-700 text-sm">Naveen Arumugam</p>
+                  <p className="text-gray-500 text-xs">Mortgage Broker · Dandenong, VIC</p>
                 </div>
               </div>
             </div>
