@@ -66,13 +66,8 @@ function AddressAutocomplete({ value, onChange }) {
           headers: { 'Accept-Language': 'en-AU' },
         })
         const data = await res.json()
-        // Filter to address-like results (house, building, road, suburb)
+        // Show any AU result — let Nominatim do the matching
         const filtered = data
-          .filter((r) =>
-            ['house', 'building', 'residential', 'road', 'suburb', 'neighbourhood', 'quarter'].includes(r.type) ||
-            r.class === 'place' ||
-            r.address?.house_number
-          )
           .slice(0, 5)
           .map((r) => r.display_name)
         setSuggestions(filtered)
@@ -500,7 +495,7 @@ function StepResult({ user, result }) {
       ) : (
         <div className="space-y-3">
           <p className="text-center text-sm text-gray-600 font-medium">
-            Want Naveen to find you a better rate?
+            Want a broker to find you a better rate?
           </p>
           <button
             className="btn-primary w-full"
