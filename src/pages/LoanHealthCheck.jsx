@@ -81,7 +81,7 @@ function AddressAutocomplete({ value, onChange }) {
         // silently fail — address is optional
       }
       setLoading(false)
-    }, 400)
+    }, 200)
   }
 
   const select = (addr) => {
@@ -370,7 +370,6 @@ function StepLoanDetails({ user, onResult }) {
       <div>
         <label className="form-label">Property Address (optional)</label>
         <AddressAutocomplete value={propertyAddress} onChange={setPropertyAddress} />
-        <p className="text-gray-400 text-xs mt-1">Helps Naveen research local lender options for your area.</p>
       </div>
       {error && <p className="text-red-500 text-sm">{error}</p>}
       <button className="btn-primary w-full" onClick={handleCalculate} disabled={loading}>
@@ -482,23 +481,12 @@ function StepResult({ user, result }) {
               <p className="text-gray-400 text-xs mt-0.5">over 5 yrs</p>
             </div>
           </div>
-          <p className="text-xs text-gray-400 text-center pt-1">
-            Monthly savings = PMT({result.interestRate}%) − PMT({BENCHMARK_RATE}%) · Annual = ×12 · 5-yr = ×60
-          </p>
         </div>
       )}
 
-      {/* Methodology note */}
-      <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 text-xs text-amber-800 space-y-1">
-        <p>
-          <strong>Benchmark rate ({BENCHMARK_RATE}% p.a.)</strong> — a competitive variable rate currently
-          available to eligible borrowers through Spotto Finance&apos;s lender panel.
-        </p>
-        <p>
-          Calculations assume a 30-year principal-and-interest loan using the standard amortisation
-          formula. Actual savings depend on your lender, loan term, and individual credit assessment.
-        </p>
-      </div>
+      <p className="text-xs text-gray-400 text-center">
+        Estimates based on a 30-year loan. Actual savings depend on lender and individual circumstances.
+      </p>
 
       {/* CTA */}
       {callbackSent ? (
