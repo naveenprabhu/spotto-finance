@@ -21,6 +21,7 @@ export default function Header() {
     { label: 'Contact', to: '/#contact' },
   ]
 
+
   return (
     <header
       className={`sticky top-0 z-50 transition-all duration-300 ${
@@ -52,12 +53,12 @@ export default function Header() {
             >
               +61 494 168 357
             </a>
-            <a
-              href="tel:+61494168357"
+            <Link
+              to="/book"
               className="btn-primary text-sm py-2.5 px-5"
             >
-              📞 Call Now
-            </a>
+              📅 Book a Call
+            </Link>
           </div>
         </nav>
 
@@ -99,10 +100,17 @@ export default function Header() {
           {navLinks.map((l) => (
             <MobileNavLink key={l.to} to={l.to} label={l.label} onClose={() => setMenuOpen(false)} />
           ))}
-          <div className="pt-3 mt-2 border-t border-gray-100">
+          <div className="pt-3 mt-2 border-t border-gray-100 flex flex-col gap-2">
+            <Link
+              to="/book"
+              className="btn-primary w-full text-center"
+              onClick={() => setMenuOpen(false)}
+            >
+              📅 Book a Free Call
+            </Link>
             <a
               href="tel:+61494168357"
-              className="btn-primary w-full text-center"
+              className="btn-outline w-full text-center"
               onClick={() => setMenuOpen(false)}
             >
               📞 +61 494 168 357

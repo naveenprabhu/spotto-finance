@@ -9,6 +9,9 @@ import {
   logApiFailure,
   logUserAction,
 } from '../lib/firebase'
+import {
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell,
+} from 'recharts'
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 // Benchmark = competitive variable rate currently available through Spotto Finance
@@ -452,6 +455,32 @@ function StepResult({ user, result }) {
             </p>
           </div>
         </div>
+      </div>
+
+      {/* Bar chart — current vs benchmark */}
+      <div className="bg-white rounded-2xl border border-gray-100 p-4">
+        <p className="text-sm font-semibold text-navy-700 mb-3">Your Rate vs Benchmark</p>
+        <ResponsiveContainer width="100%" height={180}>
+          <BarChart
+            data={[
+              { name: 'Your Rate', value: Math.round(result.currentMonthly) },
+              { name: 'Benchmark', value: Math.round(result.benchmarkMonthly) },
+            ]}
+            margin={{ top: 4, right: 8, left: 0, bottom: 0 }}
+          >
+            <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+            <XAxis dataKey="name" tick={{ fontSize: 12 }} />
+            <YAxis tick={{ fontSize: 11 }} tickFormatter={(v) => `$${(v / 1000).toFixed(1)}k`} width={52} />
+            <Tooltip formatter={(v) => [`$${Number(v).toLocaleString('en-AU')}/mo`, undefined]} />
+            <Bar dataKey="value" radius={[6, 6, 0, 0]}>
+              <Cell fill={result.hasSavings ? '#f97316' : '#22c55e'} />
+              <Cell fill="#22c55e" />
+            </Bar>
+          </BarChart>
+        </ResponsiveContainer>
+        <p className="text-xs text-gray-400 text-center mt-1">
+          Benchmark: {BENCHMARK_RATE}% p.a. — best available rate via Spotto Finance
+        </p>
       </div>
 
       {/* Savings breakdown — only shown when there are savings */}

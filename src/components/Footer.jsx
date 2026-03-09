@@ -38,6 +38,7 @@ export default function Footer() {
                 { label: 'Calculators', to: '/calculators' },
                 { label: 'Borrowing Capacity', to: '/calculators/borrowing-capacity' },
                 { label: 'Loan Health Check', to: '/calculators/loan-health-check' },
+                { label: 'Book a Consultation', to: '/book' },
                 { label: 'Contact Us', to: '/#contact' },
               ].map((l) => (
                 <li key={l.to}>
