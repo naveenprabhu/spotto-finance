@@ -6,6 +6,11 @@ import Home from './pages/Home'
 import Calculators from './pages/Calculators'
 import BorrowingCapacity from './pages/BorrowingCapacity'
 import LoanHealthCheck from './pages/LoanHealthCheck'
+import ExtraRepayments from './pages/ExtraRepayments'
+import StampDuty from './pages/StampDuty'
+import OffsetAccount from './pages/OffsetAccount'
+import SplitLoan from './pages/SplitLoan'
+import BookConsultation from './pages/BookConsultation'
 
 function ScrollToTop() {
   const { pathname } = useLocation()
@@ -24,6 +29,11 @@ export default function App() {
           <Route path="/calculators" element={<Calculators />} />
           <Route path="/calculators/borrowing-capacity" element={<BorrowingCapacity />} />
           <Route path="/calculators/loan-health-check" element={<LoanHealthCheck />} />
+          <Route path="/calculators/extra-repayments" element={<ExtraRepayments />} />
+          <Route path="/calculators/stamp-duty" element={<StampDuty />} />
+          <Route path="/calculators/offset-account" element={<OffsetAccount />} />
+          <Route path="/calculators/split-loan" element={<SplitLoan />} />
+          <Route path="/book" element={<BookConsultation />} />
         </Routes>
       </main>
       <Footer />

@@ -135,9 +135,9 @@ export default function Home() {
             From first home buyers to seasoned investors — we get you the right loan.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center animate-fade-up-d3">
-            <a href="tel:+61494168357" className="btn-primary text-base py-3.5 px-8" onClick={() => logButtonClick('Hero - Call Now')}>
-              📞 Free Consultation
-            </a>
+            <Link to="/book" className="btn-primary text-base py-3.5 px-8" onClick={() => logButtonClick('Hero - Book Consultation')}>
+              📅 Free Consultation
+            </Link>
             <Link to="/calculators" className="btn-white text-base py-3.5 px-8" onClick={() => logButtonClick('Hero - Calculators')}>
               Try Our Calculators →
             </Link>
@@ -268,9 +268,9 @@ export default function Home() {
                   </div>
                 ))}
               </div>
-              <a href="tel:+61494168357" className="btn-primary" onClick={() => logButtonClick('About - Call Now')}>
-                Book a Free Consultation
-              </a>
+              <Link to="/book" className="btn-primary" onClick={() => logButtonClick('About - Book Consultation')}>
+                📅 Book a Free Consultation
+              </Link>
             </div>
           </div>
         </div>
