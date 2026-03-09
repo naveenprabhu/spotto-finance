@@ -68,7 +68,7 @@ function AddressAutocomplete({ value, onChange }) {
         const data = await res.json()
         const filtered = (data.features || []).map((f) => {
           const p = f.properties
-          return [p.housenumber, p.street, p.city || p.suburb || p.district, p.state, p.postcode]
+          return [p.housenumber, p.street, p.suburb || p.district || p.city, p.state, p.postcode]
             .filter(Boolean)
             .join(', ')
         }).filter(Boolean)
