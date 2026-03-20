@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false)
@@ -124,15 +124,28 @@ export default function Header() {
 
 function NavLink({ to, label }) {
   const { hash, pathname } = useLocation()
+  const navigate = useNavigate()
 
   const isActive =
     (to === '/' && pathname === '/' && !hash) ||
     (to !== '/' && !to.includes('#') && pathname.startsWith(to.split('#')[0]))
 
   if (to.includes('#')) {
+    const anchor = to.split('#')[1]
+    const handleClick = (e) => {
+      e.preventDefault()
+      const el = document.getElementById(anchor)
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth' })
+      } else {
+        navigate('/')
+        setTimeout(() => document.getElementById(anchor)?.scrollIntoView({ behavior: 'smooth' }), 100)
+      }
+    }
     return (
       <a
-        href={`#${to.split('#')[1]}`}
+        href={`#${anchor}`}
+        onClick={handleClick}
         className="px-4 py-2 rounded-xl text-sm font-medium text-gray-600 hover:text-brand-green hover:bg-brand-green-light transition-all duration-150"
       >
         {label}
@@ -156,13 +169,26 @@ function NavLink({ to, label }) {
 
 function MobileNavLink({ to, label, onClose }) {
   const { pathname } = useLocation()
+  const navigate = useNavigate()
   const isActive = to === '/' ? pathname === '/' : pathname.startsWith(to.split('#')[0])
 
   if (to.includes('#')) {
+    const anchor = to.split('#')[1]
+    const handleClick = (e) => {
+      e.preventDefault()
+      onClose()
+      const el = document.getElementById(anchor)
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth' })
+      } else {
+        navigate('/')
+        setTimeout(() => document.getElementById(anchor)?.scrollIntoView({ behavior: 'smooth' }), 100)
+      }
+    }
     return (
       <a
-        href={`#${to.split('#')[1]}`}
-        onClick={onClose}
+        href={`#${anchor}`}
+        onClick={handleClick}
         className="py-3 px-4 rounded-xl text-navy-700 font-medium hover:bg-brand-green-light hover:text-brand-green transition-colors"
       >
         {label}
