@@ -11,6 +11,7 @@ import StampDuty from './pages/StampDuty'
 import OffsetAccount from './pages/OffsetAccount'
 import SplitLoan from './pages/SplitLoan'
 import BookConsultation from './pages/BookConsultation'
+import QRScanPage from './pages/QRScanPage'
 
 function ScrollToTop() {
   const { pathname } = useLocation()
@@ -19,11 +20,14 @@ function ScrollToTop() {
 }
 
 export default function App() {
+  const { pathname } = useLocation()
+  const isQRScan = pathname === '/scan'
+
   return (
     <div className="min-h-screen flex flex-col font-sans">
       <ScrollToTop />
-      <Header />
-      <main className="flex-1">
+      {!isQRScan && <Header />}
+      <main className={isQRScan ? 'flex-1 flex flex-col' : 'flex-1'}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/calculators" element={<Calculators />} />
@@ -34,9 +38,10 @@ export default function App() {
           <Route path="/calculators/offset-account" element={<OffsetAccount />} />
           <Route path="/calculators/split-loan" element={<SplitLoan />} />
           <Route path="/book" element={<BookConsultation />} />
+          <Route path="/scan" element={<QRScanPage />} />
         </Routes>
       </main>
-      <Footer />
+      {!isQRScan && <Footer />}
     </div>
   )
 }
